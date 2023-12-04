@@ -41,6 +41,8 @@ class LikesFragment : Fragment() {
 
     // Lista de las noticias a las que el usuario le ha dado like
     private var favNews = emptyList<News>()
+
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -49,6 +51,7 @@ class LikesFragment : Fragment() {
         }
     }
 
+    /*
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
