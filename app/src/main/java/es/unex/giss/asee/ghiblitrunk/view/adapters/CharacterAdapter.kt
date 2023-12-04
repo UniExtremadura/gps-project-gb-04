@@ -51,9 +51,9 @@ class CharacterAdapter(
         holder.bind(news, charactersList.size)
     }
 
-    fun updateData(favNews: List<Character>) {
+    fun updateData(favCharacter: List<Character>) {
         // Actualizamos la lista que usa el adaptador
-        charactersList = favNews
+        charactersList = favCharacter
         notifyDataSetChanged()
     }
 }
