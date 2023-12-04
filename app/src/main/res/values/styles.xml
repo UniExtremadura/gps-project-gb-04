@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="category_technology">Technology</string>
+    <string name="category_health">Health</string>
+    <string name="category_science">Science</string>
+    <string name="category_general">General</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_sports">Sports</string>
+
+    <!-- Estilo de la letra de categoría -->
+    <style name="CategoryText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/open_sans_semibold</item>
+    </style>
+
+</resources>
