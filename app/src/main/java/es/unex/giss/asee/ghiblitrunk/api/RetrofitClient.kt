@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-    private const val BASE_URL = "url_studio_ghibli"
+    private const val BASE_URL = "https://ghibliapi.vercel.app/"
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
