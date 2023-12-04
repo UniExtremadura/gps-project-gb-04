@@ -14,16 +14,29 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import es.unex.giss.asee.ghiblitrunk.R
+import es.unex.giss.asee.ghiblitrunk.data.models.Movie
+import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.data.models.User
 import es.unex.giss.asee.ghiblitrunk.databinding.ActivityHomeBinding
 import es.unex.giss.asee.ghiblitrunk.login.UserManager
 import es.unex.giss.asee.ghiblitrunk.view.LoginActivity
 import kotlinx.coroutines.launch
 
-class HomeActivity : AppCompatActivity()
+class HomeActivity : AppCompatActivity(),
+    MoviesFragment.OnMovieClickListener,
+    CharactersFragment.OnCharacterClickListener,
+    NavigationView.OnNavigationItemSelectedListener
 {
 
     private lateinit var binding: ActivityHomeBinding
+
+    private val navController by lazy{
+        (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+    }
+
+    private lateinit var likesFragment: LikesFragment
+    private lateinit var moviesFragment: MoviesFragment
+    private lateinit var charactersFragment: CharactersFragment
 
     companion object {
         const val USER_INFO = "USER_INFO"
@@ -43,5 +56,85 @@ class HomeActivity : AppCompatActivity()
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupUI()
+    }
+
+    private fun setupUI(){
+        moviesFragment = MoviesFragment()
+        charactersFragment = CharactersFragment()
+        likesFragment = LikesFragment()
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        binding.bottomNavigation.setupWithNavController(navHostFragment.navController)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        navView.setNavigationItemSelectedListener(this)
+
+        // TODO: Implementar sección de detalles.
+        // Al navegar hacia la pantalla de detalles de la noticia, no se mostrará la bottom navigation bar
+        /*
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if(destination.id == R.id.newsDetailFragment) {
+                binding.toolbar.menu.clear()
+                binding.bottomNavigation.visibility = View.GONE
+            } else {
+                binding.toolbar.visibility = View.VISIBLE
+                binding.bottomNavigation.visibility = View.VISIBLE
+            }
+        }
+         */
+
+    }
+
+    override fun onMovieClick(movie: Movie) {
+        val action = MoviesFragmentDirections.actionMoviesFragmentToMovieDetailFragment(movie)
+        navController.navigate(action)
+    }
+
+    override fun onCharacterClick(character: Character) {
+        val action = CharactersFragmentDirections.actionCharactersFragmentToCharacterDetailFragment(character)
+        navController.navigate(action)
+    }
+
+    // TODO: revisar por si hay que eliminar esto
+    override fun onBackPressed() {
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Handle navigation view item clicks here.
+        when (item.itemId) {
+            R.id.nav_profile -> {
+                // TODO: Que lleve al perfil
+            }
+            R.id.nav_settings -> {
+                // TODO: go to settings fragment
+            }
+            R.id.nav_logout -> {
+                // Clearing session data
+                lifecycleScope.launch { UserManager.clearData(applicationContext) }
+
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
     }
 }
