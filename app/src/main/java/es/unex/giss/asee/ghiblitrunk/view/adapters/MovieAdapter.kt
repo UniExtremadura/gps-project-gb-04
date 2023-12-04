@@ -42,7 +42,7 @@ class MovieAdapter (
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieAdapter.MovieViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemMovieBinding.inflate(inflater, parent, false)
-        return MovieAdapter.MovieViewHolder(binding, onClickItem, context)
+        return MovieViewHolder(binding, onClickItem, context)
     }
 
     override fun getItemCount() = moviesList.size

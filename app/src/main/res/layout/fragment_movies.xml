@@ -33,7 +33,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_movie" />
 
-    <!-- BOTÓN DE FILTRO-->
+    <!-- BOTÓN DE FILTRO -->
     <ImageButton
         android:id="@+id/ib_filter"
         android:layout_width="32dp"
