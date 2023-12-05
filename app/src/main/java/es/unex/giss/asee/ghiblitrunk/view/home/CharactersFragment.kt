@@ -6,12 +6,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giss.asee.ghiblitrunk.R
+import es.unex.giss.asee.ghiblitrunk.api.RetrofitClient
+import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.database.GhibliTrunkDatabase
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentCharactersBinding
 import es.unex.giss.asee.ghiblitrunk.view.adapters.CharacterAdapter
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
+import es.unex.giss.asee.ghiblitrunk.view.adapters.MovieAdapter
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,6 +41,9 @@ class CharactersFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var adapter: CharacterAdapter
     private lateinit var listener: OnCharacterClickListener
+
+    private lateinit var repository: Repository
+
     interface OnCharacterClickListener {
         fun onCharacterClick(character: Character)
     }
@@ -62,6 +72,8 @@ class CharactersFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         db = GhibliTrunkDatabase.getInstance(context)!!
+        repository = Repository.getInstance(db.characterDao(), db.movieDao(), RetrofitClient.apiService)
+
         if(context is OnCharacterClickListener){
             listener = context
         }else{
@@ -71,11 +83,32 @@ class CharactersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpCharactersFeed()
+
+        subscribeUI(adapter)
+        launchDataLoad { repository.tryUpdateRecentDataCache() }
     }
+
+    private fun subscribeUI(adapter: CharacterAdapter){
+        repository.characters.observe(viewLifecycleOwner) { characters ->
+            adapter.updateData(characters)
+        }
+    }
+
+    private fun launchDataLoad(block: suspend () -> Unit): Job {
+        return lifecycleScope.launch {
+            try {
+                // TODO: Poner un spinner en la interfaz
+                // binding.spinner.visibility = View.VISIBLE
+                block()
+            }catch (exception: Exception){
+                Exception("MoviesFragment error: ${exception.message}")
+                Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-        setUpCharactersFeed()
     }
 
     override fun onDestroyView() {
@@ -92,11 +125,6 @@ class CharactersFragment : Fragment() {
                 //startActivity(intent)
             }
         }
-    }
-
-    private fun setUpCharactersFeed() {
-        // TODO: obtener las películas de la API
-        // TODO: Gestionar los filtros
     }
 
     private fun setUpRecyclerView(charactersList: List<Character>){
