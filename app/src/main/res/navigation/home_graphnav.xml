@@ -31,6 +31,9 @@
         <argument
             android:name="movie"
             app:argType="es.unex.giss.asee.ghiblitrunk.data.models.Movie" />
+        <action
+            android:id="@+id/action_movieDetailFragment_to_reviewsFragment"
+            app:destination="@id/reviewsFragment" />
     </fragment>
     <fragment
         android:id="@+id/characterDetailFragment"
@@ -40,5 +43,13 @@
         <argument
             android:name="character"
             app:argType="es.unex.giss.asee.ghiblitrunk.data.models.Character" />
+    </fragment>
+    <fragment
+        android:id="@+id/reviewsFragment"
+        android:name="es.unex.giss.asee.ghiblitrunk.view.ReviewsFragment"
+        android:label="ReviewsFragment" >
+        <argument
+            android:name="movie"
+            app:argType="es.unex.giss.asee.ghiblitrunk.data.models.Movie" />
     </fragment>
 </navigation>
