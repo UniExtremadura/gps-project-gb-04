@@ -7,10 +7,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import es.unex.giss.asee.ghiblitrunk.R
+import es.unex.giss.asee.ghiblitrunk.api.RetrofitClient
+import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
+import es.unex.giss.asee.ghiblitrunk.database.GhibliTrunkDatabase
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentMovieDetailBinding
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,6 +33,9 @@ class MovieDetailFragment : Fragment() {
     private var param2: String? = null
 
     private val args: MovieDetailFragmentArgs by navArgs()
+    private lateinit var db: GhibliTrunkDatabase
+    private lateinit var repository: Repository
+
     private var _binding: FragmentMovieDetailBinding?=null
     private val binding get() = _binding!!
 
@@ -58,6 +66,9 @@ class MovieDetailFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        db = GhibliTrunkDatabase.getInstance(context)!!
+        repository = Repository.getInstance(db.characterDao(), db.movieDao(), RetrofitClient.apiService)
+
         if(context is OnCommentClickListener){
             listener = context
         } else {
@@ -70,20 +81,37 @@ class MovieDetailFragment : Fragment() {
 
         val movie = args.movie
 
+        lifecycleScope.launch {
+            Log.d("MovieDetailFragment", "Fetching ${movie.title} details")
+            try {
+                val _movie = repository.fetchMovieDetail(movie.id)
+                _movie?.isFavourite = movie.isFavourite
+                showBinding(_movie)
+            }catch (exception: Exception){
+                Exception("CharacterDetailFragment error: ${exception.message}")
+                Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+        Log.d("MovieDetailFragment","Showing ${movie.title} details")
+    }
+
+    private fun showBinding(movie: Movie?){
         with(binding){
+            /*
             // Establecer valores al título y a la descripción
-            // tvTitle.text = movie.title
-            // tvContent.text = movie.content
+            tvTitle.text = movie.title
+            tvContent.text = movie.content
 
             // Configurar el like si existe
 
             // Configurar el botón de comentar
-            /*btnComment.setOnClickListener {
+            btnComment.setOnClickListener {
                 listener.onCommentClick(news, R.id.movieDetailFragment)
-            }*/
-        }
+            }
+            */
 
-        Log.d("MovieDetailFragment","Showing movie details")
+            // TODO: Hacer el resto de bindings
+        }
     }
     companion object {
         /**

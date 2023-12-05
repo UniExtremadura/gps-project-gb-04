@@ -10,9 +10,6 @@ import es.unex.giss.asee.ghiblitrunk.database.MovieDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class Repository private constructor(
     private val characterDao: CharacterDao,
@@ -34,77 +31,77 @@ class Repository private constructor(
 
     private suspend fun fetchRecentCharacters()
     {
-        val apiService: ApiService = RetrofitClient.apiService
-        val call: Call<List<Character>> = apiService.getAllPeople()
-
-        call.enqueue(object : Callback<List<Character>>
-        {
-            // Se ejecuta si recibimos respuesta
-            override fun onResponse(call: Call<List<Character>>, response: Response<List<Character>>) {
-                val result: Result<List<Character>> = RetrofitClient.handleApiResponse(response)
-
-                // Si se produce error en la llamada se imprime
-                if (!result.isSuccess) {
-                    val error = result.exceptionOrNull()
-                    Log.e("REPOSITORY_CHARACTERS", "Error: ${error?.message}")
-                    return
-                }
-
-                Log.e("REPOSITORY_CHARACTERS", "CONEXIÓN A LA API REALIZADA")
-
-                val charactersResponse = result.getOrNull()
-                if (charactersResponse != null) {
+        try {
+            val response = RetrofitClient.apiService.getAllPeople()
+            if (response.isSuccessful) {
+                val charactersResponse = response.body()
+                charactersResponse?.let {
                     // Ejecutar la inserción de la base de datos en un contexto adecuado
                     CoroutineScope(Dispatchers.IO).launch {
-                        characterDao.insertAll(charactersResponse)
+                        characterDao.insertAll(it)
                         lastUpdateTimeMillis = System.currentTimeMillis()
                     }
                 }
+            } else {
+                Log.e("REPOSITORY_CHARACTERS", "API Error: ${response.errorBody()?.string()}")
             }
-
-            // Se ejecuta si se produce un error de red
-            override fun onFailure(call: Call<List<Character>>, t: Throwable) {
-                Log.e("REPOSITORY_CHARACTERS", "Error on API call: ${t.message}")
-            }
-        })
+        } catch (e: Exception) {
+            Log.e("REPOSITORY_CHARACTERS", "Error on API call: ${e.message}")
+        }
     }
 
-    private suspend fun fetchRecentMovies()
-    {
-        val apiService: ApiService = RetrofitClient.apiService
-        val call: Call<List<Movie>> = apiService.getAllFilms()
+    suspend fun fetchCharacterDetail(characterId: String): Character?{
+        val response = try {
+            RetrofitClient.apiService.getPersonById(characterId)
+        } catch (e: Exception) {
+            Log.e("REPOSITORY_CHARACTER_DETAIL", "Error on API call: ${e.message}")
+            return null
+        }
 
-        call.enqueue(object : Callback<List<Movie>>
-        {
-            // Se ejecuta si recibimos respuesta
-            override fun onResponse(call: Call<List<Movie>>, response: Response<List<Movie>>) {
-                val result: Result<List<Movie>> = RetrofitClient.handleApiResponse(response)
+        return if (response.isSuccessful) {
+            response.body()
+        } else {
+            Log.e("REPOSITORY_CHARACTER_DETAIL", "API Error: ${response.errorBody()?.string()}")
+            null
+        }
+    }
 
-                // Si se produce error en la llamada se imprime
-                if (!result.isSuccess) {
-                    val error = result.exceptionOrNull()
-                    Log.e("REPOSITORY_MOVIES", "Error: ${error?.message}")
-                    return
-                }
+    suspend fun fetchMovieDetail(movieId: String): Movie?{
+        val response = try {
+            RetrofitClient.apiService.getFilmById(movieId)
+        } catch (e: Exception) {
+            Log.e("REPOSITORY_MOVIE_DETAIL", "Error on API call: ${e.message}")
+            return null
+        }
 
-                Log.e("REPOSITORY_MOVIES", "CONEXIÓN A LA API REALIZADA")
+        return if (response.isSuccessful) {
+            response.body()
+        } else {
+            Log.e("REPOSITORY_MOVIE_DETAIL", "API Error: ${response.errorBody()?.string()}")
+            null
+        }
+    }
 
-                val charactersResponse = result.getOrNull()
-                if (charactersResponse != null) {
+    private suspend fun fetchRecentMovies() {
+        try {
+            val response = RetrofitClient.apiService.getAllFilms()
+            if (response.isSuccessful) {
+                val moviesResponse = response.body()
+                moviesResponse?.let {
                     // Ejecutar la inserción de la base de datos en un contexto adecuado
                     CoroutineScope(Dispatchers.IO).launch {
-                        moviesDao.insertAll(charactersResponse)
+                        moviesDao.insertAll(it)
                         lastUpdateTimeMillis = System.currentTimeMillis()
                     }
                 }
+            } else {
+                Log.e("REPOSITORY_MOVIES", "API Error: ${response.errorBody()?.string()}")
             }
-
-            // Se ejecuta si se produce un error de red
-            override fun onFailure(call: Call<List<Movie>>, t: Throwable) {
-                Log.e("REPOSITORY_MOVIES", "Error on API call: ${t.message}")
-            }
-        })
+        } catch (e: Exception) {
+            Log.e("REPOSITORY_MOVIES", "Error on API call: ${e.message}")
+        }
     }
+
 
     private suspend fun shouldUpdateMoviesCache(): Boolean
     {
