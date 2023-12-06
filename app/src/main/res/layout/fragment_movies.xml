@@ -7,7 +7,7 @@
     android:padding="30dp"
     android:background="#FFFFFF">
 
-    <!-- Título "CHARACTERS" -->
+    <!-- Título "MOVIES" -->
     <TextView
         android:id="@+id/tv_title_movie"
         android:layout_width="wrap_content"
@@ -21,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- RecyclerView para mostrar noticias -->
+    <!-- RecyclerView para mostrar las películas -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_movies_list"
         android:layout_width="0dp"
