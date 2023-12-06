@@ -1,10 +1,15 @@
 package es.unex.giss.asee.ghiblitrunk.data
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.switchMap
 import es.unex.giss.asee.ghiblitrunk.api.ApiService
 import es.unex.giss.asee.ghiblitrunk.api.RetrofitClient
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
+import es.unex.giss.asee.ghiblitrunk.data.models.UserMovieCrossRef
+import es.unex.giss.asee.ghiblitrunk.data.models.UserWithMovies
 import es.unex.giss.asee.ghiblitrunk.database.CharacterDao
 import es.unex.giss.asee.ghiblitrunk.database.MovieDao
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +25,14 @@ class Repository private constructor(
     val characters = characterDao.getAllPeople()
     val movies = moviesDao.getAllMovies()
 
+    private val userFilter = MutableLiveData<Long>()
+
+    val moviesInLibrary: LiveData<UserWithMovies> = userFilter.switchMap { userId -> moviesDao.getUserWithMovies(userId) }
+
+    fun setUserId(userId: Long){
+        userFilter.value = userId
+    }
+
     suspend fun tryUpdateRecentDataCache()
     {
         if (shouldUpdateMoviesCache())
@@ -27,6 +40,16 @@ class Repository private constructor(
 
         if (shouldUpdateCharactersCache())
             fetchRecentCharacters()
+    }
+
+    suspend fun movieToLibrary(movie: Movie, userId: Long){
+        moviesDao.update(movie)
+        moviesDao.insertUserMovie(UserMovieCrossRef(userId, movie.id))
+    }
+
+    suspend fun deleteMovieFromLibrary(movie: Movie, userId: Long){
+        moviesDao.delete(UserMovieCrossRef(userId, movie.id))
+        moviesDao.update(movie)
     }
 
     private suspend fun fetchRecentCharacters()
