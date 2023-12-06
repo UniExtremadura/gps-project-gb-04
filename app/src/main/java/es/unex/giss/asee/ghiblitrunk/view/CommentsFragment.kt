@@ -10,28 +10,28 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giss.asee.ghiblitrunk.database.GhibliTrunkDatabase
 import es.unex.giss.asee.ghiblitrunk.data.models.Review
-import es.unex.giss.asee.ghiblitrunk.databinding.FragmentReviewsBinding
+import es.unex.giss.asee.ghiblitrunk.databinding.FragmentCommentsBinding
 import es.unex.giss.asee.ghiblitrunk.login.UserManager
+import es.unex.giss.asee.ghiblitrunk.view.adapters.CommentAdapter
 import kotlinx.coroutines.launch
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class ReviewsFragment : Fragment() {
+class CommentsFragment : Fragment() {
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
     private lateinit var db: GhibliTrunkDatabase
-    private var _binding: FragmentReviewsBinding?=null
+    private var _binding: FragmentCommentsBinding?=null
     private val binding get() = _binding!!
-    private lateinit var adapter: ReviewsAdapter
+    private lateinit var adapter: CommentAdapter
     private lateinit var reviewsList: List<Review>
-    private val args: ReviewsFragmentArgs by navArgs()
+    private val args: CommentsFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +47,7 @@ class ReviewsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentReviewsBinding.inflate(inflater, container, false)
+        _binding = FragmentCommentsBinding.inflate(inflater, container, false)
 
         setUpRecyclerView()
         setUpListeners()
@@ -67,27 +67,28 @@ class ReviewsFragment : Fragment() {
     }
 
     private fun setUpListeners() {
-        /*
-        val news = args.news
+        val movie = args.movie
         with(binding) {
             btnSubmit.setOnClickListener {
                 val reviewText = etReview.text.toString().trim()
 
+
                 if (isValidReview(reviewText)) {
-                    lifecycleScope.launch {
-                        val userId = UserManager.loadCurrentUser(requireContext())?.userId
-                        Log.e("REVIEWS_FRAGMENT", "$userId")
-                        Log.e("REVIEWS_FRAGMENT", "${news.newsId}")
-                        // Insertar la reseña en la base de datos
-                        userId?.let { it1 ->
-                            news.newsId?.let { it2 ->
-                                Review(null,
-                                    it2, it1, reviewText)
-                            }
-                        }?.let { it2 -> db.reviewDao().insertReview(it2) }
-                        // Actualizar la lista de reseñas en el RecyclerView
-                        setUpRecyclerView()
-                    }
+                    /*
+                        lifecycleScope.launch {
+                            val userId = UserManager.loadCurrentUser(requireContext())?.userId
+                            Log.e("REVIEWS_FRAGMENT", "$userId")
+                            Log.e("REVIEWS_FRAGMENT", "${movie.id}")
+                            // Insertar la reseña en la base de datos
+                            userId?.let { userId ->
+                                movie.id?.let { movieId ->
+                                    Review(null,
+                                        movieId, userId, reviewText)
+                                }
+                            }?.let { it2 -> db.reviewDao().insertReview(it2) }
+                            // Actualizar la lista de reseñas en el RecyclerView
+                            setUpRecyclerView()
+                        }*/
 
                     // Limpiar el campo de entrada después de enviar la reseña
                     etReview.text.clear()
@@ -97,8 +98,6 @@ class ReviewsFragment : Fragment() {
                 }
             }
         }
-
-         */
     }
 
     override fun onResume() {
@@ -112,6 +111,7 @@ class ReviewsFragment : Fragment() {
     }
 
     private fun setUpRecyclerView() {
+        Log.e("COMMENTS_FRAG", "Setting up the RecyclerView")
         lifecycleScope.launch {
             /*
             val news = args.news

@@ -1,4 +1,4 @@
-package es.unex.giss.asee.ghiblitrunk.view
+package es.unex.giss.asee.ghiblitrunk.view.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,11 +9,11 @@ import es.unex.giss.asee.ghiblitrunk.login.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class ReviewsAdapter(
+class CommentAdapter(
     private var reviewsList: List<Review>,
     private val coroutineScope: CoroutineScope,
     private val context: Context?
-) : RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>() {
+) : RecyclerView.Adapter<CommentAdapter.ReviewViewHolder>() {
 
     class ReviewViewHolder(
         private val binding: ItemReviewBinding,

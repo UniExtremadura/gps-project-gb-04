@@ -40,7 +40,7 @@ class MovieDetailFragment : Fragment() {
     private lateinit var listener: OnCommentClickListener
 
     interface OnCommentClickListener {
-        fun onCommentClick(movies: Movie, fragmentId: Int)
+        fun onCommentClick(movie: Movie)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,7 +86,7 @@ class MovieDetailFragment : Fragment() {
                 _movie?.isFavourite = movie.isFavourite
                 showBinding(_movie)
             }catch (exception: Exception){
-                Exception("CharacterDetailFragment error: ${exception.message}")
+                Exception("MovieDetailFragment error: ${exception.message}")
                 Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
             }
         }
@@ -95,20 +95,35 @@ class MovieDetailFragment : Fragment() {
 
     private fun showBinding(movie: Movie?){
         with(binding){
-            /*
-            // Establecer valores al título y a la descripción
-            tvTitle.text = movie.title
-            tvContent.text = movie.content
+            // Establecer los detalles de la película
+            tvTitle.text = movie?.title
+            tvOriginalTitle.text = movie?.original_title
+            tvDescription.text = movie?.description
+
+            if(movie?.director != ""){
+                tvDirector.text = "Director: ${movie?.director}"
+            }else{
+                tvProducer.text = "Director: Anonymous"
+            }
+
+            if(movie?.producer != ""){
+                tvProducer.text = "Producer: ${movie?.producer}"
+            }else{
+                tvProducer.text = "Producer: Anonymous"
+            }
+
+            if(movie?.release_date != ""){
+                tvReleaseDate.text = "Release date: ${movie?.release_date}"
+            }else{
+                tvReleaseDate.text = "Release date: Anonymous"
+            }
 
             // Configurar el like si existe
 
             // Configurar el botón de comentar
-            btnComment.setOnClickListener {
-                listener.onCommentClick(news, R.id.movieDetailFragment)
+            btnWriteComment.setOnClickListener {
+                movie?.let { it1 -> listener.onCommentClick(it1) }
             }
-            */
-
-            // TODO: Hacer el resto de bindings
         }
     }
     companion object {

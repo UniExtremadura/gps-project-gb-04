@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -25,7 +26,8 @@ import kotlinx.coroutines.launch
 class HomeActivity : AppCompatActivity(),
     MoviesFragment.OnMovieClickListener,
     CharactersFragment.OnCharacterClickListener,
-    NavigationView.OnNavigationItemSelectedListener
+    NavigationView.OnNavigationItemSelectedListener,
+    MovieDetailFragment.OnCommentClickListener
 {
 
     private lateinit var binding: ActivityHomeBinding
@@ -67,7 +69,6 @@ class HomeActivity : AppCompatActivity(),
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         binding.bottomNavigation.setupWithNavController(navHostFragment.navController)
 
-        /*
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
@@ -81,11 +82,14 @@ class HomeActivity : AppCompatActivity(),
 
         navView.setNavigationItemSelectedListener(this)
 
-        // TODO: Implementar sección de detalles.
-        // Al navegar hacia la pantalla de detalles de la noticia, no se mostrará la bottom navigation bar
-        /*
+        // Al navegar hacia la pantalla de detalles tanto de la película como la del personaje,
+        // no se mostrará el bottom navigation bar
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if(destination.id == R.id.newsDetailFragment) {
+            if(
+                destination.id == R.id.movieDetailFragment ||
+                destination.id == R.id.characterDetailFragment ||
+                destination.id == R.id.commentsFragment
+            ) {
                 binding.toolbar.menu.clear()
                 binding.bottomNavigation.visibility = View.GONE
             } else {
@@ -93,10 +97,6 @@ class HomeActivity : AppCompatActivity(),
                 binding.bottomNavigation.visibility = View.VISIBLE
             }
         }
-         */
-
-         */
-
     }
 
     override fun onMovieClick(movie: Movie) {
@@ -106,6 +106,11 @@ class HomeActivity : AppCompatActivity(),
 
     override fun onCharacterClick(character: Character) {
         val action = CharactersFragmentDirections.actionCharactersFragmentToCharacterDetailFragment(character)
+        navController.navigate(action)
+    }
+
+    override fun onCommentClick(movie: Movie) {
+        val action = MovieDetailFragmentDirections.actionMovieDetailFragmentToCommentsFragment(movie)
         navController.navigate(action)
     }
 

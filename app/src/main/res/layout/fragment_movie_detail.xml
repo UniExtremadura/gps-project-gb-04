@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:fontFamily="@font/open_sans_semibold"
+        android:fontFamily="@font/open_sans_extrabold"
         android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -23,17 +23,65 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Movie title" />
 
-    <!-- Contenido de la noticia -->
+    <!-- Título original -->
     <TextView
-        android:id="@+id/tv_content"
+        android:id="@+id/tv_originalTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/open_sans_extrabold"
+        android:textColor="#808080"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:text="Original title..." />
+
+    <!-- Descripción -->
+    <TextView
+        android:id="@+id/tv_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/open_sans_semibold"
         android:textColor="#000000"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_originalTitle"
         tools:text="Movie description..." />
+
+    <!-- Director -->
+    <TextView
+        android:id="@+id/tv_director"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/open_sans_extrabold"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/tv_description"
+        tools:text="Director..." />
+
+    <!-- Productor -->
+    <TextView
+        android:id="@+id/tv_producer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/open_sans_semibold"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/tv_director"
+        tools:text="Producer..." />
+
+    <!-- Fecha de lanzamiento -->
+    <TextView
+        android:id="@+id/tv_releaseDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/open_sans_semibold"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/tv_producer"
+        tools:text="Release Date..." />
 
     <!-- Botón de Like -->
     <ImageView
@@ -48,7 +96,7 @@
 
     <!-- Botón para dejar un comentario -->
     <Button
-        android:id="@+id/btn_write_review"
+        android:id="@+id/btn_write_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
