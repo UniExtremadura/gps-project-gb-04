@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class Repository private constructor(
+class Repository(
     private val characterDao: CharacterDao,
     private val moviesDao: MovieDao,
     private val networkService: ApiService
@@ -81,7 +81,7 @@ class Repository private constructor(
     private suspend fun fetchRecentCharacters()
     {
         try {
-            val response = RetrofitClient.apiService.getAllPeople()
+            val response = networkService.getAllPeople()
             if (response.isSuccessful) {
                 val charactersResponse = response.body()
                 charactersResponse?.let {
@@ -101,7 +101,7 @@ class Repository private constructor(
 
     suspend fun fetchCharacterDetail(characterId: String): Character?{
         val response = try {
-            RetrofitClient.apiService.getPersonById(characterId)
+            networkService.getPersonById(characterId)
         } catch (e: Exception) {
             Log.e("REPOSITORY_CHARACTER_DETAIL", "Error on API call: ${e.message}")
             return null
@@ -117,7 +117,7 @@ class Repository private constructor(
 
     suspend fun fetchMovieDetail(movieId: String): Movie?{
         val response = try {
-            RetrofitClient.apiService.getFilmById(movieId)
+            networkService.getFilmById(movieId)
         } catch (e: Exception) {
             Log.e("REPOSITORY_MOVIE_DETAIL", "Error on API call: ${e.message}")
             return null
@@ -133,7 +133,7 @@ class Repository private constructor(
 
     private suspend fun fetchRecentMovies() {
         try {
-            val response = RetrofitClient.apiService.getAllFilms()
+            val response = networkService.getAllFilms()
             if (response.isSuccessful) {
                 val moviesResponse = response.body()
                 moviesResponse?.let {
@@ -171,18 +171,5 @@ class Repository private constructor(
     companion object {
         private const val MIN_TIME_FROM_LAST_FETCH_MILLIS: Long = 30000
 
-        @Volatile
-        private var INSTANCE: Repository? = null
-
-        fun getInstance(
-            characterDao: CharacterDao,
-            moviesDao: MovieDao,
-            apiService: ApiService
-        ): Repository
-        {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: Repository(characterDao, moviesDao, apiService).also { INSTANCE = it }
-            }
-        }
     }
 }

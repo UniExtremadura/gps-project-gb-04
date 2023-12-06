@@ -10,10 +10,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import es.unex.giss.asee.ghiblitrunk.api.RetrofitClient
+import es.unex.giss.asee.ghiblitrunk.GhibliTrunkApplication
 import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
-import es.unex.giss.asee.ghiblitrunk.database.GhibliTrunkDatabase
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentMovieDetailBinding
 import kotlinx.coroutines.launch
 
@@ -33,7 +32,6 @@ class MovieDetailFragment : Fragment() {
     private var param2: String? = null
 
     private val args: MovieDetailFragmentArgs by navArgs()
-    private lateinit var db: GhibliTrunkDatabase
     private lateinit var repository: Repository
 
     private var _binding: FragmentMovieDetailBinding?=null
@@ -66,8 +64,8 @@ class MovieDetailFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        db = GhibliTrunkDatabase.getInstance(context)!!
-        repository = Repository.getInstance(db.characterDao(), db.movieDao(), RetrofitClient.apiService)
+        val appContainer = (this.activity?.application as GhibliTrunkApplication).appContainer
+        repository = appContainer.repository
 
         if(context is OnCommentClickListener){
             listener = context
