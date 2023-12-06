@@ -16,15 +16,15 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Imagen del personaje -->
+        <!-- Imagen de la película -->
         <ImageView
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="300dp"
             android:scaleType="centerCrop"
             android:background="#FEE1D4"/>
 
-        <!-- Título del personaje -->
+        <!-- Título de la película -->
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
@@ -36,7 +36,7 @@
             android:fontFamily="@font/open_sans_semibold"
             android:textColor="#E23155" />
 
-        <!-- Descripción del personaje -->
+        <!-- Descripción -->
         <TextView
             android:id="@+id/tv_description"
             android:layout_width="match_parent"

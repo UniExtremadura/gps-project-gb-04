@@ -53,8 +53,8 @@ class CharacterAdapter(
                     ivImage.setImageResource(wallpapersList[position])
                 }
 
-                tvTitle.text = character.name
-                tvDescription.text = character.gender
+                tvName.text = character.name
+                tvGender.text = character.gender
 
                 // Configurar onClick
                 ivLike.setOnClickListener {

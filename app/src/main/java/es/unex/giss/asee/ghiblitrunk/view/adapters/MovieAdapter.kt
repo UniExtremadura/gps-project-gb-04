@@ -1,9 +1,14 @@
 package es.unex.giss.asee.ghiblitrunk.view.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.Glide.init
+import es.unex.giss.asee.ghiblitrunk.R
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.ItemMovieBinding
 import es.unex.giss.asee.ghiblitrunk.view.cardnews.CardCharacterManager
@@ -14,54 +19,41 @@ class MovieAdapter (
     private val context: Context?
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
-    // Obtener el ID de la imagen por su nombre
-    private fun getImageResourceId(imageName: String): Int {
-        return context?.resources?.getIdentifier(
-            imageName,
-            "drawable",
-            "${context.packageName}.movie_wallpapers"
-        ) ?: 0
-    }
-
-    // Lista de imágenes que cargará el adapter
-    private val wallpapersList = mutableListOf<Int>()
-
-    init {
-        // Cargar las imágenes en la lista usando el patrón de nombres
-        val resources = context?.resources
-        if (resources != null) {
-            for (i in 1..10) {
-                val imageName = "img_movie_$i"
-                val imageId = getImageResourceId(imageName)
-                if (imageId != 0) {
-                    wallpapersList.add(imageId)
-                }
-            }
-        }
-    }
-
     class MovieViewHolder(
         private val binding: ItemMovieBinding,
         private val onClickItem: (Movie) ->Unit,
-        private val context: Context?,
-        private val wallpapersList: List<Int>
+        private val context: Context?
     ) : RecyclerView.ViewHolder(binding.root) {
         private val cardManager = context?.let { CardCharacterManager(it) }
-        fun bind(movie: Movie, position: Int) {
+        fun bind(movie: Movie) {
             with(binding){// Asignamos las características del item
-                if(position != -1){
-                    // Asignar la imagen al ImageView
-                    ivImage.setImageResource(wallpapersList[position])
+                // Mostramos la imagen
+                val imageName = movie.title.lowercase().replace(" ", "_").replace("'", "") // Formato para buscar la imagen
+                // Obtener el ID de la imagen
+                val resourceId = context?.resources?.getIdentifier(imageName, "drawable", context.packageName)
+                Log.e("MOVIE_ADAPTER", "El ID del recurso para $imageName es: $resourceId")
+
+                if (resourceId != null && resourceId != 0) {
+                    // Si encontramos el recurso lo añadimos al imageView
+                    context?.let {
+                        Glide.with(it)
+                            .load(resourceId)
+                            .into(ivImage)
+                    }
+                } else {
+                    // Si no se encuentra, ocultamos el ImageView
+                    binding.ivImage.visibility = View.GONE
                 }
 
-
+                // Mostramos el título
                 tvTitle.text = movie.title
                 tvDescription.text = movie.description
 
-                // Configurar onClick
+                // Configuramos el like
                 ivLike.setOnClickListener {
                     cardManager?.onClickLike(movie)
                 }
+
 
                 // Configurar el clic al pulsar en el resto de items del card_view
                 root.setOnClickListener{
@@ -74,7 +66,7 @@ class MovieAdapter (
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieAdapter.MovieViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemMovieBinding.inflate(inflater, parent, false)
-        return MovieViewHolder(binding, onClickItem, context, wallpapersList)
+        return MovieViewHolder(binding, onClickItem, context)
     }
 
     override fun getItemCount() = moviesList.size
@@ -82,15 +74,7 @@ class MovieAdapter (
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = moviesList[position]
 
-        // Verificar si wallpapersList tiene elementos antes de realizar cálculos
-        if (wallpapersList.isNotEmpty()) {
-            val imagePosition = position % wallpapersList.size
-            holder.bind(movie, imagePosition)
-        } else {
-            // Manejar el caso donde wallpapersList está vacía
-            // Por ejemplo, puedes asignar una imagen predeterminada
-            holder.bind(movie, -1) // O asignar el índice que desees para la imagen
-        }
+        holder.bind(movie)
     }
 
     fun updateData(newList: List<Movie>) {
