@@ -8,7 +8,9 @@ import es.unex.giss.asee.ghiblitrunk.api.ApiService
 import es.unex.giss.asee.ghiblitrunk.api.RetrofitClient
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
+import es.unex.giss.asee.ghiblitrunk.data.models.UserCharacterCrossRef
 import es.unex.giss.asee.ghiblitrunk.data.models.UserMovieCrossRef
+import es.unex.giss.asee.ghiblitrunk.data.models.UserWithCharacters
 import es.unex.giss.asee.ghiblitrunk.data.models.UserWithMovies
 import es.unex.giss.asee.ghiblitrunk.database.CharacterDao
 import es.unex.giss.asee.ghiblitrunk.database.MovieDao
@@ -46,6 +48,11 @@ class Repository private constructor(
     suspend fun movieToLibrary(movie: Movie, userId: Long){
         moviesDao.update(movie)
         moviesDao.insertUserMovie(UserMovieCrossRef(userId, movie.id))
+    }
+
+    suspend fun characterToLibrary(character: Character, userId: Long){
+        characterDao.update(character)
+        characterDao.insertUserCharacter(UserCharacterCrossRef(userId, character.id))
     }
 
     suspend fun deleteMovieFromLibrary(movie: Movie, userId: Long){

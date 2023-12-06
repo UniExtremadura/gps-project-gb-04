@@ -10,9 +10,10 @@ import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.data.models.User
 import es.unex.giss.asee.ghiblitrunk.data.models.Converters
 import es.unex.giss.asee.ghiblitrunk.data.models.Review
+import es.unex.giss.asee.ghiblitrunk.data.models.UserCharacterCrossRef
 import es.unex.giss.asee.ghiblitrunk.data.models.UserMovieCrossRef
 
-@Database(entities = [User::class, Movie::class, Character::class, Review::class, UserMovieCrossRef::class], version = 4, exportSchema = false)
+@Database(entities = [User::class, Movie::class, Character::class, Review::class, UserMovieCrossRef::class, UserCharacterCrossRef::class], version = 5, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class GhibliTrunkDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
