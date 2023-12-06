@@ -2,6 +2,7 @@ package es.unex.giss.asee.ghiblitrunk.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -24,6 +25,18 @@ interface CharacterDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUserCharacter(crossRef: UserCharacterCrossRef)
+
+    @Delete
+    suspend fun delete(character: Character)
+
+    @Delete
+    suspend fun delete(userCharacterCrossRef: UserCharacterCrossRef)
+
+    @Query("SELECT is_favourite FROM characters Where id = :id")
+    suspend fun getIfFavorite(id: String): Boolean
+
+    @Query("SELECT * FROM characters Where is_favourite = 1")
+    suspend fun getFavorites(): List<Character>
 
     @Query("SELECT count(*) FROM characters")
     suspend fun getNumberOfCharacters(): Long

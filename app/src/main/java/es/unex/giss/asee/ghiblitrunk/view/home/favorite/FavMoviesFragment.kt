@@ -6,16 +6,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import es.unex.giss.asee.ghiblitrunk.R
 import es.unex.giss.asee.ghiblitrunk.api.RetrofitClient
 import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.database.GhibliTrunkDatabase
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentFavMoviesBinding
-import es.unex.giss.asee.ghiblitrunk.databinding.FragmentLibraryBinding
 import es.unex.giss.asee.ghiblitrunk.view.adapters.MovieAdapter
-import es.unex.giss.asee.ghiblitrunk.view.home.MoviesFragment
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -62,8 +61,9 @@ class FavMoviesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setUpRecyclerView(emptyList())
-        subscribeUI(adapter)
+        lifecycleScope.launch {
+            setUpRecyclerView(repository.getFavoritesMovies())
+        }
     }
 
     override fun onCreateView(
@@ -71,13 +71,14 @@ class FavMoviesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fav_movies, container, false)
+        _binding = FragmentFavMoviesBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    private fun subscribeUI(adapter: MovieAdapter){
-        repository.moviesInLibrary.observe(viewLifecycleOwner) { moviesInLibrary ->
-            adapter.updateData(moviesInLibrary.movies)
-        }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // Limpiar el binding
     }
 
     private fun setUpRecyclerView(moviesList: List<Movie>){
@@ -92,11 +93,8 @@ class FavMoviesFragment : Fragment() {
         )
 
         with(binding){
-            /*
             rvMoviesList.layoutManager = LinearLayoutManager(context)
             rvMoviesList.adapter = adapter
-             */
-            // TODO: Hacer el resto de bindings.
         }
     }
 

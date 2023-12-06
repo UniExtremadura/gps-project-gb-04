@@ -1,17 +1,11 @@
 package es.unex.giss.asee.ghiblitrunk.data
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
 import es.unex.giss.asee.ghiblitrunk.api.ApiService
 import es.unex.giss.asee.ghiblitrunk.api.RetrofitClient
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
-import es.unex.giss.asee.ghiblitrunk.data.models.UserCharacterCrossRef
-import es.unex.giss.asee.ghiblitrunk.data.models.UserMovieCrossRef
-import es.unex.giss.asee.ghiblitrunk.data.models.UserWithCharacters
-import es.unex.giss.asee.ghiblitrunk.data.models.UserWithMovies
 import es.unex.giss.asee.ghiblitrunk.database.CharacterDao
 import es.unex.giss.asee.ghiblitrunk.database.MovieDao
 import kotlinx.coroutines.CoroutineScope
@@ -29,9 +23,6 @@ class Repository private constructor(
 
     private val userFilter = MutableLiveData<Long>()
 
-    val moviesInLibrary: LiveData<UserWithMovies> = userFilter.switchMap { userId -> moviesDao.getUserWithMovies(userId) }
-    val charactersInLibrary: LiveData<UserWithCharacters> = userFilter.switchMap { userId -> characterDao.getUserWithCharacters(userId) }
-
     fun setUserId(userId: Long){
         userFilter.value = userId
     }
@@ -45,20 +36,47 @@ class Repository private constructor(
             fetchRecentCharacters()
     }
 
+    //region Library
+
     suspend fun movieToLibrary(movie: Movie, userId: Long){
+        movie.isFavourite = true
         moviesDao.update(movie)
-        moviesDao.insertUserMovie(UserMovieCrossRef(userId, movie.id))
     }
 
     suspend fun characterToLibrary(character: Character, userId: Long){
+        character.isFavourite = true
         characterDao.update(character)
-        characterDao.insertUserCharacter(UserCharacterCrossRef(userId, character.id))
     }
 
     suspend fun deleteMovieFromLibrary(movie: Movie, userId: Long){
-        moviesDao.delete(UserMovieCrossRef(userId, movie.id))
+        movie.isFavourite = false
         moviesDao.update(movie)
     }
+
+    suspend fun deleteCharacterFromLibrary(character: Character, userId: Long){
+        character.isFavourite = false
+        characterDao.update(character)
+    }
+
+    suspend fun getIfFavorite(movie: Movie): Boolean{
+        return moviesDao.getIfFavorite(movie.id)
+    }
+
+    suspend fun getIfFavorite(character: Character): Boolean{
+        return characterDao.getIfFavorite(character.id)
+    }
+
+    suspend fun getFavoritesCharacters(): List<Character>{
+        return characterDao.getFavorites()
+    }
+
+    suspend fun getFavoritesMovies(): List<Movie>{
+        return moviesDao.getFavorites()
+    }
+
+    //endregion
+
+    //region Data Fetch
 
     private suspend fun fetchRecentCharacters()
     {
@@ -132,6 +150,8 @@ class Repository private constructor(
             Log.e("REPOSITORY_MOVIES", "Error on API call: ${e.message}")
         }
     }
+
+    //endregion
 
 
     private suspend fun shouldUpdateMoviesCache(): Boolean

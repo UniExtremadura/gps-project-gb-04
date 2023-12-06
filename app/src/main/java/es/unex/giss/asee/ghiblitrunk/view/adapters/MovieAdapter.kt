@@ -59,9 +59,6 @@ class MovieAdapter (
                 tvDescription.text = movie.description
 
                 // Configurar onClick
-
-                // Configurar OnLongClick
-                /*
                 ivLike.setOnClickListener {
                     cardManager?.onClickLike(movie)
                 }
@@ -69,7 +66,7 @@ class MovieAdapter (
                 // Configurar el clic al pulsar en el resto de items del card_view
                 root.setOnClickListener{
                     onClickItem(movie)
-                }*/
+                }
             }
         }
     }

@@ -6,14 +6,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import es.unex.giss.asee.ghiblitrunk.R
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giss.asee.ghiblitrunk.api.RetrofitClient
 import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.database.GhibliTrunkDatabase
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentFavCharactersBinding
 import es.unex.giss.asee.ghiblitrunk.view.adapters.CharacterAdapter
-import es.unex.giss.asee.ghiblitrunk.view.adapters.MovieAdapter
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -56,8 +57,8 @@ class FavCharactersFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fav_characters, container, false)
-    }
+        _binding = FragmentFavCharactersBinding.inflate(inflater, container, false)
+        return binding.root    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -68,15 +69,11 @@ class FavCharactersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setUpRecyclerView(emptyList())
-        subscribeUI(adapter)
-    }
-
-    private fun subscribeUI(adapter: CharacterAdapter){
-        repository.charactersInLibrary.observe(viewLifecycleOwner) { charactersInLibrary ->
-            adapter.updateData(charactersInLibrary.characters)
+        lifecycleScope.launch {
+            setUpRecyclerView(repository.getFavoritesCharacters())
         }
     }
+
 
     private fun setUpRecyclerView(characterList: List<Character>){
         // Actualizar el RecyclerView con la lista combinada
@@ -90,9 +87,14 @@ class FavCharactersFragment : Fragment() {
         )
 
         with(binding){
-            rvCList.layoutManager = LinearLayoutManager(context)
-            rvMoviesList.adapter = adapter
+            rvCharactersList.layoutManager = LinearLayoutManager(context)
+            rvCharactersList.adapter = adapter
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // Limpiar el binding
     }
 
     companion object {

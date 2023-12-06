@@ -33,6 +33,12 @@ interface MovieDao {
     @Query("SELECT count(*) FROM movies")
     suspend fun getNumberOfMovies(): Long
 
+    @Query("SELECT is_favourite FROM movies Where id = :id")
+    suspend fun getIfFavorite(id: String): Boolean
+
+    @Query("SELECT * FROM movies Where is_favourite = 1")
+    suspend fun getFavorites(): List<Movie>
+
     @Query("SELECT * FROM movies")
     fun getAllMovies(): LiveData<List<Movie>>
 
