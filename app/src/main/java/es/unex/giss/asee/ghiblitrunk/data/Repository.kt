@@ -28,6 +28,7 @@ class Repository private constructor(
     private val userFilter = MutableLiveData<Long>()
 
     val moviesInLibrary: LiveData<UserWithMovies> = userFilter.switchMap { userId -> moviesDao.getUserWithMovies(userId) }
+    val charactersInLibrary: LiveData<UserWithCharacters> = userFilter.switchMap { userId -> characterDao.getUserWithCharacters(userId) }
 
     fun setUserId(userId: Long){
         userFilter.value = userId
