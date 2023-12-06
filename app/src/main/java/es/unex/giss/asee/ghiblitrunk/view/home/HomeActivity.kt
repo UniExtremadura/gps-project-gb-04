@@ -138,7 +138,9 @@ class HomeActivity : AppCompatActivity(),
                 lifecycleScope.launch { UserManager.clearData(applicationContext) }
 
                 val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
+                finish() // Cerrar la actividad actual para evitar que se pueda regresar con el botón de retroceso
             }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)

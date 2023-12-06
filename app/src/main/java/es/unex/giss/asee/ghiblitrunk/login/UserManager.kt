@@ -39,5 +39,6 @@ object UserManager {
         val editor = sharedPrefs.edit()
 
         editor.remove("username")
+        editor.apply()
     }
 }
