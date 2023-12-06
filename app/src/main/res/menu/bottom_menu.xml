@@ -12,16 +12,16 @@
 
     <!-- Personajes -->
     <item
-        android:id="@+id/characterFragment"
+        android:id="@+id/charactersFragment"
         android:title="@string/character_option"
         android:icon="@drawable/ic_android_black_24dp"
         android:enabled="true"
         app:showAsAction="ifRoom" />
 
-    <!-- FAVORITOS -->
+    <!-- Bibliteca de favoritos -->
     <item
-        android:id="@+id/likesFragment"
-        android:title="@string/favorite_option"
+        android:id="@+id/libraryFragment"
+        android:title="@string/library_option"
         android:icon="@drawable/baseline_favorite_border_24"
         android:enabled="true"
         app:showAsAction="ifRoom" />

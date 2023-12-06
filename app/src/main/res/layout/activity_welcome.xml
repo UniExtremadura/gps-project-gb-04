@@ -4,54 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#191C2E"
-    android:paddingHorizontal="10dp"
-    android:paddingVertical="50dp"
     tools:context=".view.WelcomeActivity">
 
+    <!-- Fondo de imagen -->
     <ImageView
-        android:id="@+id/tv_login_title"
-        android:layout_width="366dp"
-        android:layout_height="302dp"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_launcher_background"
+        android:id="@+id/imageViewBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/portada_app"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:id="@+id/welcome"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/white"
+
         android:fontFamily="@font/montserrat_alternates"
-        android:text="@string/welcome_msg"
-        android:textAllCaps="false"
-        android:textColor="#ED3257"
-        android:textSize="12sp"
-        android:textStyle="bold|italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login_title"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="192dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:fontFamily="@font/montserrat_alternates_bold"
+        android:padding="16dp"
+        android:text="Welcome to Ghibli Trunk"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
         android:textSize="34sp"
+        android:textStyle="bold"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

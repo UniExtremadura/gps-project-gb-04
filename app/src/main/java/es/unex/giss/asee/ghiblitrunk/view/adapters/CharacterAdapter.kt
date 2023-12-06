@@ -13,27 +13,61 @@ class CharacterAdapter(
     private val context: Context?
 ) : RecyclerView.Adapter<CharacterAdapter.CharacterViewHolder>() {
 
+    // Obtener el ID de la imagen por su nombre
+    private fun getImageResourceId(imageName: String): Int {
+        return context?.resources?.getIdentifier(
+            imageName,
+            "drawable",
+            "${context.packageName}.character_wallpapers"
+        ) ?: 0
+    }
+
+    // Lista de imágenes que cargará el adapter
+    private val wallpapersList = mutableListOf<Int>()
+
+    init {
+        // Cargar las imágenes en la lista usando el patrón de nombres
+        val resources = context?.resources
+        if (resources != null) {
+            for (i in 1..10) {
+                val imageName = "img_char_$i"
+                val imageId = getImageResourceId(imageName)
+                if (imageId != 0) {
+                    wallpapersList.add(imageId)
+                }
+            }
+        }
+    }
+
     class CharacterViewHolder(
         private val binding: ItemCharacterBinding,
         private val onClickItem: (Character) -> Unit,
-        private val context: Context?
+        private val context: Context?,
+        private val wallpapersList: List<Int>
     ) : RecyclerView.ViewHolder(binding.root) {
         private val cardManager = context?.let { CardCharacterManager(it) }
-        fun bind(character: Character, totalItems: Int) {
-            with(binding){
-                // Asignar valores a las vistas
-                tvTitle.text = character.name
-                tvDescription.text = character.films.toString()
+        fun bind(character: Character, position: Int) {
+            with(binding){// Asignamos las características del item
+                if(position != -1){
+                    // Asignar la imagen al ImageView
+                    ivImage.setImageResource(wallpapersList[position])
+                }
 
-                // Configurar el clic en el botón de "like"
+                tvTitle.text = character.name
+                tvDescription.text = character.gender
+
+                // Configurar onClick
+
+                // Configurar OnLongClick
+                /*
                 ivLike.setOnClickListener {
-                    cardManager?.onClickLike(character)
+                    cardManager?.onClickLike(movie)
                 }
 
                 // Configurar el clic al pulsar en el resto de items del card_view
                 root.setOnClickListener{
-                    onClickItem(character)
-                }
+                    onClickItem(movie)
+                }*/
             }
         }
     }
@@ -41,19 +75,28 @@ class CharacterAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemCharacterBinding.inflate(inflater, parent, false)
-        return CharacterViewHolder(binding, onClickItem, context)
+        return CharacterViewHolder(binding, onClickItem, context, wallpapersList)
     }
 
     override fun getItemCount() = charactersList.size
 
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
-        val news = charactersList[position]
-        holder.bind(news, charactersList.size)
+        val character = charactersList[position]
+
+        // Verificar si wallpapersList tiene elementos antes de realizar cálculos
+        if (wallpapersList.isNotEmpty()) {
+            val imagePosition = position % wallpapersList.size
+            holder.bind(character, imagePosition)
+        } else {
+            // Manejar el caso donde wallpapersList está vacía
+            // Por ejemplo, puedes asignar una imagen predeterminada
+            holder.bind(character, -1) // O asignar el índice que desees para la imagen
+        }
     }
 
-    fun updateData(favCharacter: List<Character>) {
+    fun updateData(newList: List<Character>) {
         // Actualizamos la lista que usa el adaptador
-        charactersList = favCharacter
+        charactersList = newList
         notifyDataSetChanged()
     }
 }

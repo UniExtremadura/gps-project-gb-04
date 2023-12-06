@@ -74,7 +74,7 @@ class JoinActivity : AppCompatActivity() {
                         etPassword.text.toString()
                     )
 
-                    val id = db?.userDao()?.insert(user)
+                    db?.userDao()?.insert(user)
 
                     navigateToHomeActivity(
                         User(

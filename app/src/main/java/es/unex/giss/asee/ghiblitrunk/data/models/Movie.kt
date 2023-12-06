@@ -3,6 +3,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import java.io.Serializable
 
 @Entity(tableName = "movies")
 data class Movie(
@@ -22,5 +23,5 @@ data class Movie(
     @TypeConverters(Converters::class) val vehicles: List<String> = emptyList(),
     val url: String = "",
     @ColumnInfo(name="is_favourite") var isFavourite: Boolean = false
-)
+): Serializable
 

@@ -84,6 +84,7 @@ class CharactersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setUpRecyclerView(emptyList())
         subscribeUI(adapter)
         launchDataLoad { repository.tryUpdateRecentDataCache() }
     }

@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import java.io.Serializable
 
 @Entity(tableName = "characters")
 data class Character(
@@ -17,4 +18,4 @@ data class Character(
     val species: String = "",
     val url: String = "",
     @ColumnInfo(name="is_favourite") var isFavourite: Boolean = false
-)
+): Serializable

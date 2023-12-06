@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -20,6 +19,7 @@ import es.unex.giss.asee.ghiblitrunk.data.models.User
 import es.unex.giss.asee.ghiblitrunk.databinding.ActivityHomeBinding
 import es.unex.giss.asee.ghiblitrunk.login.UserManager
 import es.unex.giss.asee.ghiblitrunk.view.LoginActivity
+import es.unex.giss.asee.ghiblitrunk.view.home.favorite.LibraryFragment
 import kotlinx.coroutines.launch
 
 class HomeActivity : AppCompatActivity(),
@@ -34,7 +34,7 @@ class HomeActivity : AppCompatActivity(),
         (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
     }
 
-    private lateinit var likesFragment: LikesFragment
+    private lateinit var libraryFragment: LibraryFragment
     private lateinit var moviesFragment: MoviesFragment
     private lateinit var charactersFragment: CharactersFragment
 
@@ -62,11 +62,12 @@ class HomeActivity : AppCompatActivity(),
     private fun setupUI(){
         moviesFragment = MoviesFragment()
         charactersFragment = CharactersFragment()
-        likesFragment = LikesFragment()
+        libraryFragment = LibraryFragment()
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         binding.bottomNavigation.setupWithNavController(navHostFragment.navController)
 
+        /*
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
@@ -92,6 +93,8 @@ class HomeActivity : AppCompatActivity(),
                 binding.bottomNavigation.visibility = View.VISIBLE
             }
         }
+         */
+
          */
 
     }

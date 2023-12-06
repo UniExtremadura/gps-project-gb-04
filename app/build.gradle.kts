@@ -98,6 +98,7 @@ dependencies {
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2")
 
     ////////////////////////////////////
     /////////// RECYCLERVIEW ///////////
@@ -105,7 +106,7 @@ dependencies {
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
 
     ////////////////////////////////////
-    ////////////// PICASSO /////////////
+    ////////////// GLIDE ///////////////
     ////////////////////////////////////
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
@@ -114,4 +115,9 @@ dependencies {
     testImplementation ("junit:junit:4.13.2")
     testImplementation ("org.mockito:mockito-core:3.12.4") // Reemplaza 3.x con la versión más reciente
     testImplementation ("androidx.test:core:1.4.0") // Reemplaza 1.x con la versión más reciente
+
+    ////////////////////////////////////
+    //////////// TABLAYOUT /////////////
+    ////////////////////////////////////
+    implementation ("androidx.viewpager2:viewpager2:1.0.0")
 }

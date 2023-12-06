@@ -18,7 +18,7 @@ class WelcomeActivity : AppCompatActivity() {
 
     companion object {
         val LOGIN_USER = "LOGIN_USER"
-        const val DELAY_MILLIS = 2000L // Puedes ajustar el tiempo de retraso según sea necesario
+        const val DELAY_MILLIS = 3000L // Puedes ajustar el tiempo de retraso según sea necesario
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +36,7 @@ class WelcomeActivity : AppCompatActivity() {
                 finish() // Cerrar WelcomeActivity si está abierta
             } else {
                 // Hay un usuario actual, mostrar mensaje de bienvenida y cerrar WelcomeActivity después del retraso
-                binding.textView2.text = "Welcome back, ${currentUser.name}"
+                binding.welcome.text = "Welcome to Ghibli Trunk, ${currentUser.name}"
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     finishWelcomeActivity()

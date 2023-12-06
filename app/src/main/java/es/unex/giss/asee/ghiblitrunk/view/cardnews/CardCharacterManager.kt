@@ -70,4 +70,16 @@ class CardCharacterManager(private val context: Context) {
              */
         }
     }
+
+    /*
+    // TODO: convertir en extensión como para obtener el historial de noticias
+    private fun loadFavorites(){
+        lifecycleScope.launch {
+            UserManager.loadCurrentUser(requireContext())?.userId?.let { userId ->
+                favNews = db.newsDao().getFavouriteNewsOfUser(userId)
+            }
+            Log.d("LIKES_FRAGMENT", "Favorites List Size: $favNews.size")
+            adapter.updateData(favNews)
+        }
+    }*/
 }
