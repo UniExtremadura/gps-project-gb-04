@@ -9,14 +9,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import es.unex.giss.asee.ghiblitrunk.R
-import es.unex.giss.asee.ghiblitrunk.api.RetrofitClient
+import es.unex.giss.asee.ghiblitrunk.GhibliTrunkApplication
 import es.unex.giss.asee.ghiblitrunk.data.Repository
-import es.unex.giss.asee.ghiblitrunk.database.GhibliTrunkDatabase
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentCharactersBinding
 import es.unex.giss.asee.ghiblitrunk.view.adapters.CharacterAdapter
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
-import es.unex.giss.asee.ghiblitrunk.view.adapters.MovieAdapter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -34,8 +31,6 @@ class CharactersFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
-    private lateinit var db: GhibliTrunkDatabase
 
     private var _binding: FragmentCharactersBinding?=null
     private val binding get() = _binding!!
@@ -71,8 +66,8 @@ class CharactersFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        db = GhibliTrunkDatabase.getInstance(context)!!
-        repository = Repository.getInstance(db.characterDao(), db.movieDao(), RetrofitClient.apiService)
+        val appContainer = (this.activity?.application as GhibliTrunkApplication).appContainer
+        repository = appContainer.repository
 
         if(context is OnCharacterClickListener){
             listener = context

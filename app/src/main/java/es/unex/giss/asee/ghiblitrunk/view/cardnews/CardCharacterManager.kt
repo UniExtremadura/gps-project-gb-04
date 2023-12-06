@@ -2,12 +2,10 @@ package es.unex.giss.asee.ghiblitrunk.view.cardnews
 
 import android.content.Context
 import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
-import es.unex.giss.asee.ghiblitrunk.api.RetrofitClient
+import es.unex.giss.asee.ghiblitrunk.GhibliTrunkApplication
 import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
-import es.unex.giss.asee.ghiblitrunk.database.GhibliTrunkDatabase
 import es.unex.giss.asee.ghiblitrunk.login.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,8 +13,7 @@ import kotlinx.coroutines.launch
 
 class CardCharacterManager(private val context: Context) {
 
-    var db: GhibliTrunkDatabase = GhibliTrunkDatabase.getInstance(context)
-    var repository: Repository = Repository.getInstance(db.characterDao(), db.movieDao(), RetrofitClient.apiService)
+    var repository: Repository = (context.applicationContext as GhibliTrunkApplication).appContainer.repository
 
     fun onClickLike(character: Character) {
         CoroutineScope(Dispatchers.Main).launch {
