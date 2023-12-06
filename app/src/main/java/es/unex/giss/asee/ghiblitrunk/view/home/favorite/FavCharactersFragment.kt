@@ -1,11 +1,19 @@
 package es.unex.giss.asee.ghiblitrunk.view.home.favorite
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import es.unex.giss.asee.ghiblitrunk.R
+import es.unex.giss.asee.ghiblitrunk.api.RetrofitClient
+import es.unex.giss.asee.ghiblitrunk.data.Repository
+import es.unex.giss.asee.ghiblitrunk.data.models.Character
+import es.unex.giss.asee.ghiblitrunk.database.GhibliTrunkDatabase
+import es.unex.giss.asee.ghiblitrunk.databinding.FragmentFavCharactersBinding
+import es.unex.giss.asee.ghiblitrunk.view.adapters.CharacterAdapter
+import es.unex.giss.asee.ghiblitrunk.view.adapters.MovieAdapter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +30,19 @@ class FavCharactersFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var db: GhibliTrunkDatabase
+    private lateinit var repository: Repository
+
+    private lateinit var adapter: CharacterAdapter
+    private lateinit var listener: OnCharacterClickListener
+
+    private var _binding: FragmentFavCharactersBinding?=null
+    private val binding get() = _binding!!
+
+    interface OnCharacterClickListener {
+        fun onCharacterClick(character: Character)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -36,6 +57,42 @@ class FavCharactersFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_fav_characters, container, false)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        db = GhibliTrunkDatabase.getInstance(context)
+        repository = Repository.getInstance(db.characterDao(), db.movieDao(), RetrofitClient.apiService)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setUpRecyclerView(emptyList())
+        subscribeUI(adapter)
+    }
+
+    private fun subscribeUI(adapter: CharacterAdapter){
+        repository.charactersInLibrary.observe(viewLifecycleOwner) { charactersInLibrary ->
+            adapter.updateData(charactersInLibrary.characters)
+        }
+    }
+
+    private fun setUpRecyclerView(characterList: List<Character>){
+        // Actualizar el RecyclerView con la lista combinada
+        adapter = CharacterAdapter(
+            characterList,
+            onClickItem =
+            {
+                listener.onCharacterClick(it)
+            },
+            context = context
+        )
+
+        with(binding){
+            rvCList.layoutManager = LinearLayoutManager(context)
+            rvMoviesList.adapter = adapter
+        }
     }
 
     companion object {
