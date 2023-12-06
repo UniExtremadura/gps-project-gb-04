@@ -10,30 +10,42 @@
 
     <!-- Título -->
     <TextView
-        android:id="@+id/tv_title"
+        android:id="@+id/tv_name"
         android:layout_width="243dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:fontFamily="@font/open_sans_semibold"
+        android:fontFamily="@font/open_sans_extrabold"
         android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Character title" />
+        tools:text="Character name" />
 
-    <!-- Contenido de la noticia -->
+    <!-- Género -->
     <TextView
-        android:id="@+id/tv_content"
+        android:id="@+id/tv_gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/open_sans_extrabold"
+        android:textColor="#808080"
+        app:layout_constraintTop_toBottomOf="@id/tv_name"
+        tools:text="Genre..." />
+
+    <!-- Otra info -->
+    <TextView
+        android:id="@+id/tv_otherInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
         android:fontFamily="@font/open_sans_semibold"
         android:textColor="#000000"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
-        tools:text="Character description..." />
+        app:layout_constraintTop_toBottomOf="@id/tv_gender"
+        tools:text="Other info..." />
 
     <!-- Botón de Like -->
     <ImageView
@@ -42,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:src="@drawable/baseline_favorite_border_24"
+        android:src="@drawable/ic_favorite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

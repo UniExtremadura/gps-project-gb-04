@@ -11,9 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import es.unex.giss.asee.ghiblitrunk.database.GhibliTrunkDatabase
-import es.unex.giss.asee.ghiblitrunk.data.models.Review
+import es.unex.giss.asee.ghiblitrunk.data.models.Comment
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentCommentsBinding
-import es.unex.giss.asee.ghiblitrunk.login.UserManager
 import es.unex.giss.asee.ghiblitrunk.view.adapters.CommentAdapter
 import kotlinx.coroutines.launch
 
@@ -30,7 +29,7 @@ class CommentsFragment : Fragment() {
     private var _binding: FragmentCommentsBinding?=null
     private val binding get() = _binding!!
     private lateinit var adapter: CommentAdapter
-    private lateinit var reviewsList: List<Review>
+    private lateinit var reviewsList: List<Comment>
     private val args: CommentsFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +70,6 @@ class CommentsFragment : Fragment() {
         with(binding) {
             btnSubmit.setOnClickListener {
                 val reviewText = etReview.text.toString().trim()
-
 
                 if (isValidReview(reviewText)) {
                     /*

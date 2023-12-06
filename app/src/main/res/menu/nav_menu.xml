@@ -9,9 +9,8 @@
 
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_android_black_24dp"
+            android:icon="@drawable/ic_account"
             android:title="My profile"/>
-
 
         <item
             android:id="@+id/nav_settings"

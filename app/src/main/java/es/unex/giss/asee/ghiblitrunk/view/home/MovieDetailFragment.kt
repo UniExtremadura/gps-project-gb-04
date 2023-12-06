@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import es.unex.giss.asee.ghiblitrunk.GhibliTrunkApplication
 import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
@@ -98,6 +99,25 @@ class MovieDetailFragment : Fragment() {
             // Establecer los detalles de la película
             tvTitle.text = movie?.title
             tvOriginalTitle.text = movie?.original_title
+
+            // Mostramos la imagen
+            val imageName = movie?.title?.lowercase()?.replace(" ", "_")?.replace("'", "") // Formato para buscar la imagen
+            // Obtener el ID de la imagen
+            val resourceId = context?.resources?.getIdentifier(imageName, "drawable", context?.packageName)
+            Log.e("MOVIE_ADAPTER", "El ID del recurso para $imageName es: $resourceId")
+
+            if (resourceId != null && resourceId != 0) {
+                // Si encontramos el recurso lo añadimos al imageView
+                context?.let {
+                    Glide.with(it)
+                        .load(resourceId)
+                        .into(ivPoster)
+                }
+            } else {
+                // Si no se encuentra, ocultamos el ImageView
+                binding.ivPoster.visibility = View.GONE
+            }
+
             tvDescription.text = movie?.description
 
             if(movie?.director != ""){

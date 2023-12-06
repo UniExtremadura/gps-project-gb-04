@@ -36,7 +36,10 @@ class WelcomeActivity : AppCompatActivity() {
                 finish() // Cerrar WelcomeActivity si está abierta
             } else {
                 // Hay un usuario actual, mostrar mensaje de bienvenida y cerrar WelcomeActivity después del retraso
-                binding.welcome.text = "Welcome to Ghibli Trunk, ${currentUser.name}"
+                with(binding){
+                    appName.text = "Ghibli Trunk"
+                    welcome.text = "Welcome, ${currentUser.name}"
+                }
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     finishWelcomeActivity()

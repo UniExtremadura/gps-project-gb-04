@@ -22,7 +22,7 @@
     <item
         android:id="@+id/libraryFragment"
         android:title="@string/library_option"
-        android:icon="@drawable/baseline_favorite_border_24"
+        android:icon="@drawable/ic_favorite"
         android:enabled="true"
         app:showAsAction="ifRoom" />
 

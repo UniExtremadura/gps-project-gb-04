@@ -4,7 +4,7 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity
-data class Review(
+data class Comment(
     @PrimaryKey(autoGenerate = true) val reviewId: Long?,
     val newsId: Long,
     val userId: Long,

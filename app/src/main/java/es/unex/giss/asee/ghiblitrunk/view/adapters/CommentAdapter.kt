@@ -3,14 +3,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import es.unex.giss.asee.ghiblitrunk.data.models.Review
+import es.unex.giss.asee.ghiblitrunk.data.models.Comment
 import es.unex.giss.asee.ghiblitrunk.databinding.ItemReviewBinding
 import es.unex.giss.asee.ghiblitrunk.login.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class CommentAdapter(
-    private var reviewsList: List<Review>,
+    private var reviewsList: List<Comment>,
     private val coroutineScope: CoroutineScope,
     private val context: Context?
 ) : RecyclerView.Adapter<CommentAdapter.ReviewViewHolder>() {
@@ -20,12 +20,12 @@ class CommentAdapter(
         private val coroutineScope: CoroutineScope,
         private val context: Context?
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(review: Review, totalItems: Int) {
+        fun bind(comment: Comment, totalItems: Int) {
             coroutineScope.launch { // Lanzar una corrutina
                 val username = context?.let { UserManager.loadCurrentUser(it)?.name }
                 with(binding) {
                     tvUsername.text = username
-                    tvReview.text = review.content
+                    tvReview.text = comment.content
                 }
             }
         }
@@ -44,8 +44,8 @@ class CommentAdapter(
         holder.bind(review, reviewsList.size)
     }
 
-    fun updateData(updatedReviews: List<Review>) {
-        reviewsList = updatedReviews
+    fun updateData(updatedComments: List<Comment>) {
+        reviewsList = updatedComments
         notifyDataSetChanged()
     }
 }

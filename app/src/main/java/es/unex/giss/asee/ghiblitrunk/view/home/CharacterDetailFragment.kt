@@ -83,8 +83,10 @@ class CharacterDetailFragment : Fragment() {
 
     private fun showBinding(character: Character?){
         with(binding){
-            binding.tvTitle.text = character?.name
-            // TODO: Hacer el resto de los bindings
+            tvName.text = character?.name
+            tvGender.text = character?.gender
+            tvOtherInfo.text = "This character is ${character?.age} years old and has ${character?.eye_color?.lowercase()} eyes and ${character?.hair_color?.lowercase()} hair."
+            // TODO: mostrar las películas de las que forma parte
         }
     }
 
