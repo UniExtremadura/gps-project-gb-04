@@ -3,7 +3,6 @@ package es.unex.giss.asee.ghiblitrunk.data
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import es.unex.giss.asee.ghiblitrunk.api.ApiService
-import es.unex.giss.asee.ghiblitrunk.api.RetrofitClient
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.database.CharacterDao
@@ -170,6 +169,5 @@ class Repository(
 
     companion object {
         private const val MIN_TIME_FROM_LAST_FETCH_MILLIS: Long = 30000
-
     }
 }

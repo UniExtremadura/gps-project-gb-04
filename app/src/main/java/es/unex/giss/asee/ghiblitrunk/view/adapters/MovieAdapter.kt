@@ -7,24 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.Glide.init
-import es.unex.giss.asee.ghiblitrunk.R
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.ItemMovieBinding
-import es.unex.giss.asee.ghiblitrunk.view.cardnews.CardCharacterManager
+import es.unex.giss.asee.ghiblitrunk.view.home.MovieViewModel
 
 class MovieAdapter (
     private var moviesList: List<Movie>,
     private val onClickItem: (Movie) -> Unit,
+    private val viewModel: MovieViewModel,
     private val context: Context?
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     class MovieViewHolder(
         private val binding: ItemMovieBinding,
         private val onClickItem: (Movie) ->Unit,
+        private val viewModel: MovieViewModel,
         private val context: Context?
     ) : RecyclerView.ViewHolder(binding.root) {
-        private val cardManager = context?.let { CardCharacterManager(it) }
         fun bind(movie: Movie) {
             with(binding){// Asignamos las características del item
                 // Mostramos la imagen
@@ -51,9 +50,8 @@ class MovieAdapter (
 
                 // Configuramos el like
                 ivLike.setOnClickListener {
-                    cardManager?.onClickLike(movie)
+                    viewModel.onClickLike(movie)
                 }
-
 
                 // Configurar el clic al pulsar en el resto de items del card_view
                 root.setOnClickListener{
@@ -66,7 +64,7 @@ class MovieAdapter (
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieAdapter.MovieViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemMovieBinding.inflate(inflater, parent, false)
-        return MovieViewHolder(binding, onClickItem, context)
+        return MovieViewHolder(binding, onClickItem, viewModel, context)
     }
 
     override fun getItemCount() = moviesList.size

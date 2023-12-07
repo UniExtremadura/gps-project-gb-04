@@ -7,20 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import es.unex.giss.asee.ghiblitrunk.GhibliTrunkApplication
-import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentMoviesBinding
+import es.unex.giss.asee.ghiblitrunk.login.UserManager
 import es.unex.giss.asee.ghiblitrunk.view.adapters.MovieAdapter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -28,9 +24,6 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MoviesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private var _binding: FragmentMoviesBinding?=null
     private val binding get() = _binding!!
@@ -38,18 +31,10 @@ class MoviesFragment : Fragment() {
 
     private lateinit var listener: OnMovieClickListener
 
-    private lateinit var repository: Repository
+    private val viewModel: MovieViewModel by viewModels { MovieViewModel.Factory }
 
     interface OnMovieClickListener {
         fun onMovieClick(movie: Movie)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -61,18 +46,17 @@ class MoviesFragment : Fragment() {
 
         // Establecer listeners
         setupListeners()
+
         return binding.root
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        val appContainer = (this.activity?.application as GhibliTrunkApplication).appContainer
-        repository = appContainer.repository
 
         if(context is OnMovieClickListener){
             listener = context
         }else{
-            throw RuntimeException(context.toString() + " must implement onNewsClickListener")
+            throw RuntimeException(context.toString() + " must implement OnMovieClickListener")
         }
     }
 
@@ -80,13 +64,26 @@ class MoviesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        lifecycleScope.launch { viewModel.user = UserManager.loadCurrentUser(requireContext()) }
+
+        viewModel.spinner.observe(viewLifecycleOwner) { movie ->
+            // TODO: Poner un spinner en la interfaz gráfica
+            //binding.spinner.visibility = if (movie) View.VISIBLE else View.GONE
+        }
+
+        viewModel.toast.observe(viewLifecycleOwner) {text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
+            }
+        }
+
         setUpRecyclerView(emptyList())
         subscribeUI(adapter)
-        launchDataLoad { repository.tryUpdateRecentDataCache() }
     }
 
     private fun subscribeUI(adapter: MovieAdapter){
-        repository.movies.observe(viewLifecycleOwner) { movies ->
+        viewModel.movies.observe(viewLifecycleOwner) { movies ->
             adapter.updateData(movies)
         }
     }
@@ -129,6 +126,7 @@ class MoviesFragment : Fragment() {
         // Actualizar el RecyclerView con la lista combinada
         adapter = MovieAdapter(
             moviesList,
+            viewModel = viewModel,
             onClickItem =
             {
                 listener.onMovieClick(it)
@@ -142,23 +140,4 @@ class MoviesFragment : Fragment() {
         }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MoviesFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MoviesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }

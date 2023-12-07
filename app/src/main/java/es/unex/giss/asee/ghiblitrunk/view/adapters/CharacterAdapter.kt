@@ -5,11 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.databinding.ItemCharacterBinding
-import es.unex.giss.asee.ghiblitrunk.view.cardnews.CardCharacterManager
+import es.unex.giss.asee.ghiblitrunk.view.home.CharacterViewModel
 
 class CharacterAdapter(
     private var charactersList: List<Character>,
     private val onClickItem: (Character) -> Unit,
+    private val viewModel: CharacterViewModel,
     private val context: Context?
 ) : RecyclerView.Adapter<CharacterAdapter.CharacterViewHolder>() {
 
@@ -42,10 +43,10 @@ class CharacterAdapter(
     class CharacterViewHolder(
         private val binding: ItemCharacterBinding,
         private val onClickItem: (Character) -> Unit,
+        private val viewModel: CharacterViewModel,
         private val context: Context?,
         private val wallpapersList: List<Int>
     ) : RecyclerView.ViewHolder(binding.root) {
-        private val cardManager = context?.let { CardCharacterManager(it) }
         fun bind(character: Character, position: Int) {
             with(binding){// Asignamos las características del item
                 if(position != -1){
@@ -58,7 +59,7 @@ class CharacterAdapter(
 
                 // Configurar onClick
                 ivLike.setOnClickListener {
-                    cardManager?.onClickLike(character)
+                    viewModel.onClickLike(character)
                 }
 
                 // Configurar el clic al pulsar en el resto de items del card_view
@@ -72,7 +73,7 @@ class CharacterAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemCharacterBinding.inflate(inflater, parent, false)
-        return CharacterViewHolder(binding, onClickItem, context, wallpapersList)
+        return CharacterViewHolder(binding, onClickItem, viewModel, context, wallpapersList)
     }
 
     override fun getItemCount() = charactersList.size
