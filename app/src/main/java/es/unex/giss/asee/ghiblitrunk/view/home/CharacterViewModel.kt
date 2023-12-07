@@ -32,6 +32,10 @@ class CharacterViewModel (
     val favoriteCharacters: LiveData<List<Character>>
         get() = _favoriteCharacters
 
+    private val _characterDetail = MutableLiveData<Character>()
+    val characterDetail: LiveData<Character>
+        get() = _characterDetail
+
     init {
         refresh()
     }
@@ -86,6 +90,12 @@ class CharacterViewModel (
             val favorites = repository.getFavoritesCharacters()
             Log.e("CHARACTER_VIEW_MODEL", favorites.toString())
             _favoriteCharacters.postValue(favorites)
+        }
+    }
+
+    fun fetchMovieDetail(character: Character){
+        viewModelScope.launch {
+            _characterDetail.value = repository.fetchCharacterDetail(character.id)
         }
     }
 

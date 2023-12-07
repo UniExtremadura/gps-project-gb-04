@@ -17,7 +17,8 @@ class MovieDetailFragment : Fragment() {
 
     private val args: MovieDetailFragmentArgs by navArgs()
     private var _binding: FragmentMovieDetailBinding?=null
-    private val binding get() = _binding!!
+    val binding
+        get() = _binding!!
 
     private val movieViewModel: MovieViewModel by viewModels { MovieViewModel.Factory }
     private val homeViewModel: HomeViewModel by activityViewModels()
@@ -38,10 +39,10 @@ class MovieDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val argmovie = args.movie
-        movieViewModel.fetchMovieDetail(argmovie)
+        val movie = args.movie
+        movieViewModel.fetchMovieDetail(movie)
 
-        Log.d(TAG, "Fetching ${argmovie.title} details")
+        Log.d(TAG, "Fetching ${movie.title} details")
         movieViewModel.movieDetail.observe(viewLifecycleOwner) { movie ->
             showBinding(movie)
             Log.d(TAG,"Showing ${movie.title} details")
