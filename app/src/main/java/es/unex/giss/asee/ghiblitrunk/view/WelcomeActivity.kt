@@ -1,24 +1,34 @@
 package es.unex.giss.asee.ghiblitrunk.view
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import es.unex.giss.asee.ghiblitrunk.data.models.User
 import es.unex.giss.asee.ghiblitrunk.databinding.ActivityWelcomeBinding
-import es.unex.giss.asee.ghiblitrunk.login.UserManager
 import es.unex.giss.asee.ghiblitrunk.view.home.HomeActivity
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class WelcomeActivity : AppCompatActivity() {
 
+    private val FINISH_TIME_MILIS : Long = 2000
+
     private lateinit var binding: ActivityWelcomeBinding
+    private lateinit var currentUser: User
 
     companion object {
-        val LOGIN_USER = "LOGIN_USER"
-        const val DELAY_MILLIS = 3000L // Puedes ajustar el tiempo de retraso según sea necesario
+        const val USER_INFO = "USER_INFO"
+        fun start(
+            context: Context,
+            user: User
+        ){
+            val intent = Intent(context, WelcomeActivity::class.java).apply{
+                putExtra(USER_INFO, user)
+            }
+            context.startActivity(intent)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,34 +36,21 @@ class WelcomeActivity : AppCompatActivity() {
         binding = ActivityWelcomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Restaurar el usuario actual desde SharedPreferences
-        lifecycleScope.launch {
-            var currentUser: User? = UserManager.loadCurrentUser(applicationContext)
+        currentUser = intent.getSerializableExtra(USER_INFO) as User
 
-            if (currentUser == null) {
-                // No hay un usuario actual, ir a LoginActivity
-                startActivity(Intent(applicationContext, LoginActivity::class.java))
-                finish() // Cerrar WelcomeActivity si está abierta
-            } else {
-                // Hay un usuario actual, mostrar mensaje de bienvenida y cerrar WelcomeActivity después del retraso
-                with(binding){
-                    appName.text = "Ghibli Trunk"
-                    welcome.text = "Welcome, ${currentUser.name}"
-                }
-
-                Handler(Looper.getMainLooper()).postDelayed({
-                    finishWelcomeActivity()
-                }, DELAY_MILLIS)
-            }
+        with(binding){
+            appName.text = "Ghibli Trunk"
+            welcome.text = "Welcome, ${currentUser.name}"
         }
+
+        lifecycleScope.launch {
+            delay(FINISH_TIME_MILIS)
+            startHomeActivity()
+        }
+
     }
 
-    private fun finishWelcomeActivity() {
-        val welcomeActivity = this@WelcomeActivity
-        welcomeActivity.runOnUiThread {
-            welcomeActivity.finish()
-            // Iniciar HomeActivity
-            startActivity(Intent(welcomeActivity, HomeActivity::class.java))
-        }
+    private fun startHomeActivity() {
+        HomeActivity.start(this, currentUser)
     }
 }

@@ -31,6 +31,10 @@ class MovieViewModel (
     val favoriteMovies: LiveData<List<Movie>>
         get() = _favoriteMovies
 
+    private val _movieDetail = MutableLiveData<Movie>()
+    val movieDetail: LiveData<Movie>
+        get() = _movieDetail
+
     init {
         refresh()
     }
@@ -84,6 +88,12 @@ class MovieViewModel (
         viewModelScope.launch {
             val favorites = repository.getFavoritesMovies()
             _favoriteMovies.value = favorites
+        }
+    }
+
+    fun fetchMovieDetail(movie: Movie){
+        viewModelScope.launch {
+            _movieDetail.value = repository.fetchMovieDetail(movie.id)
         }
     }
 

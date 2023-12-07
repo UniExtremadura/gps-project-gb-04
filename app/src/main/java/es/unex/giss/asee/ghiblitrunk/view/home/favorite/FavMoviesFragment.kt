@@ -5,34 +5,32 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentFavMoviesBinding
-import es.unex.giss.asee.ghiblitrunk.login.UserManager
 import es.unex.giss.asee.ghiblitrunk.view.adapters.MovieAdapter
+import es.unex.giss.asee.ghiblitrunk.view.home.HomeViewModel
 import es.unex.giss.asee.ghiblitrunk.view.home.MovieViewModel
-import kotlinx.coroutines.launch
 
 class FavMoviesFragment : Fragment() {
     private lateinit var adapter: MovieAdapter
-    private lateinit var listener: OnMovieClickListener
 
     private var _binding: FragmentFavMoviesBinding?=null
     private val binding get() = _binding!!
 
     private val viewModel: MovieViewModel by viewModels { MovieViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
-
-    interface OnMovieClickListener {
-        fun onMovieClick(movie: Movie)
-    }
+    //region Lifecycle
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycleScope.launch { viewModel.user = UserManager.loadCurrentUser(requireContext()) }
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
 
         setUpRecyclerView(emptyList())
         subscribeUI(adapter)
@@ -61,6 +59,8 @@ class FavMoviesFragment : Fragment() {
         _binding = null // Limpiar el binding
     }
 
+    //endregion
+
     private fun setUpRecyclerView(moviesList: List<Movie>){
         // Actualizar el RecyclerView con la lista combinada
         adapter = MovieAdapter(
@@ -68,7 +68,7 @@ class FavMoviesFragment : Fragment() {
             viewModel = viewModel,
             onClickItem =
             {
-                listener.onMovieClick(it)
+                homeViewModel.onMovieClick(it)
             },
             context = context
         )

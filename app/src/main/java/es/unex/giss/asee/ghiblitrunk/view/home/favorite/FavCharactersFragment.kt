@@ -5,30 +5,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentFavCharactersBinding
-import es.unex.giss.asee.ghiblitrunk.login.UserManager
 import es.unex.giss.asee.ghiblitrunk.view.adapters.CharacterAdapter
 import es.unex.giss.asee.ghiblitrunk.view.home.CharacterViewModel
-import kotlinx.coroutines.launch
+import es.unex.giss.asee.ghiblitrunk.view.home.HomeViewModel
 
 
 class FavCharactersFragment : Fragment() {
     private lateinit var adapter: CharacterAdapter
-    private lateinit var listener: OnCharacterClickListener
 
     private var _binding: FragmentFavCharactersBinding?=null
     private val binding get() = _binding!!
 
     private val viewModel: CharacterViewModel by viewModels { CharacterViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
-
-    interface OnCharacterClickListener {
-        fun onCharacterClick(character: Character)
-    }
+    //region Lifecycle
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,11 +40,20 @@ class FavCharactersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycleScope.launch { viewModel.user = UserManager.loadCurrentUser(requireContext()) }
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
 
         setUpRecyclerView(emptyList())
         subscribeUI(adapter)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // Limpiar el binding
+    }
+
+    //endregion
 
     private fun subscribeUI(adapter: CharacterAdapter){
         viewModel.updateFavoritesCharacters()
@@ -65,7 +70,7 @@ class FavCharactersFragment : Fragment() {
             viewModel = viewModel,
             onClickItem =
             {
-                listener.onCharacterClick(it)
+                homeViewModel.onCharacterClick(it)
             },
             context = context
         )
@@ -75,10 +80,4 @@ class FavCharactersFragment : Fragment() {
             rvCharactersList.adapter = adapter
         }
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null // Limpiar el binding
-    }
-
 }

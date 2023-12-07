@@ -1,33 +1,28 @@
 package es.unex.giss.asee.ghiblitrunk.view.home
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentCharactersBinding
 import es.unex.giss.asee.ghiblitrunk.view.adapters.CharacterAdapter
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import es.unex.giss.asee.ghiblitrunk.login.UserManager
-import kotlinx.coroutines.launch
 
 class CharactersFragment : Fragment() {
 
     private var _binding: FragmentCharactersBinding?=null
     private val binding get() = _binding!!
     private lateinit var adapter: CharacterAdapter
-    private lateinit var listener: OnCharacterClickListener
+
     private val viewModel: CharacterViewModel by viewModels { CharacterViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
-    interface OnCharacterClickListener {
-        fun onCharacterClick(character: Character)
-    }
-
+    //region Lifecycle
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,20 +37,13 @@ class CharactersFragment : Fragment() {
         return binding.root
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        if(context is OnCharacterClickListener){
-            listener = context
-        }else{
-            throw RuntimeException(context.toString() + " must implement OnCharacterClickListener")
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycleScope.launch { viewModel.user = UserManager.loadCurrentUser(requireContext()) }
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
 
         viewModel.spinner.observe(viewLifecycleOwner) { character ->
             // TODO: Poner un spinner en la interfaz gráfica
@@ -73,15 +61,17 @@ class CharactersFragment : Fragment() {
         subscribeUI(adapter)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // avoid memory leaks
+    }
+
+    //endregion
+
     private fun subscribeUI(adapter: CharacterAdapter){
         viewModel.characters.observe(viewLifecycleOwner) { characters ->
             adapter.updateData(characters)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null // avoid memory leaks
     }
 
     private fun setupListeners() {
@@ -102,7 +92,7 @@ class CharactersFragment : Fragment() {
             viewModel = viewModel,
             onClickItem =
             {
-                listener.onCharacterClick(it)
+                homeViewModel.onCharacterClick(it)
             },
             context = context
         )

@@ -5,26 +5,28 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import es.unex.giss.asee.ghiblitrunk.data.models.Comment
 import es.unex.giss.asee.ghiblitrunk.databinding.ItemReviewBinding
-import es.unex.giss.asee.ghiblitrunk.login.UserManager
+import es.unex.giss.asee.ghiblitrunk.view.home.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class CommentAdapter(
     private var reviewsList: List<Comment>,
     private val coroutineScope: CoroutineScope,
+    private val homeViewModel: HomeViewModel,
     private val context: Context?
 ) : RecyclerView.Adapter<CommentAdapter.ReviewViewHolder>() {
 
     class ReviewViewHolder(
         private val binding: ItemReviewBinding,
         private val coroutineScope: CoroutineScope,
+        private val homeViewModel: HomeViewModel,
         private val context: Context?
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(comment: Comment, totalItems: Int) {
             coroutineScope.launch { // Lanzar una corrutina
-                val username = context?.let { UserManager.loadCurrentUser(it)?.name }
+                val username = context?.let { homeViewModel.user }
                 with(binding) {
-                    tvUsername.text = username
+                    tvUsername.text = username.toString()
                     tvReview.text = comment.content
                 }
             }
@@ -36,7 +38,7 @@ class CommentAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemReviewBinding.inflate(inflater, parent, false)
-        return ReviewViewHolder(binding, coroutineScope, context)
+        return ReviewViewHolder(binding, coroutineScope, homeViewModel, context)
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {

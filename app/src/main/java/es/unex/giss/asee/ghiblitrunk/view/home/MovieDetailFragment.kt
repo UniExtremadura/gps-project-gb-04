@@ -1,56 +1,28 @@
 package es.unex.giss.asee.ghiblitrunk.view.home
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
-import es.unex.giss.asee.ghiblitrunk.GhibliTrunkApplication
-import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentMovieDetailBinding
-import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MovieDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MovieDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private val args: MovieDetailFragmentArgs by navArgs()
-    private lateinit var repository: Repository
-
     private var _binding: FragmentMovieDetailBinding?=null
     private val binding get() = _binding!!
 
-    private lateinit var listener: OnCommentClickListener
+    private val movieViewModel: MovieViewModel by viewModels { MovieViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
-    interface OnCommentClickListener {
-        fun onCommentClick(movie: Movie)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private val TAG = "MovieDetailFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,35 +35,17 @@ class MovieDetailFragment : Fragment() {
         return binding.root
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        val appContainer = (this.activity?.application as GhibliTrunkApplication).appContainer
-        repository = appContainer.repository
-
-        if(context is OnCommentClickListener){
-            listener = context
-        } else {
-            throw RuntimeException("$context must implement OnCommentClickListener")
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val movie = args.movie
+        val argmovie = args.movie
+        movieViewModel.fetchMovieDetail(argmovie)
 
-        lifecycleScope.launch {
-            Log.d("MovieDetailFragment", "Fetching ${movie.title} details")
-            try {
-                val _movie = repository.fetchMovieDetail(movie.id)
-                _movie?.isFavourite = movie.isFavourite
-                showBinding(_movie)
-            }catch (exception: Exception){
-                Exception("MovieDetailFragment error: ${exception.message}")
-                Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
-            }
+        Log.d(TAG, "Fetching ${argmovie.title} details")
+        movieViewModel.movieDetail.observe(viewLifecycleOwner) { movie ->
+            showBinding(movie)
+            Log.d(TAG,"Showing ${movie.title} details")
         }
-        Log.d("MovieDetailFragment","Showing ${movie.title} details")
     }
 
     private fun showBinding(movie: Movie?){
@@ -142,27 +96,8 @@ class MovieDetailFragment : Fragment() {
 
             // Configurar el botón de comentar
             btnWriteComment.setOnClickListener {
-                movie?.let { it1 -> listener.onCommentClick(it1) }
+                movie?.let { it1 -> homeViewModel.onCommentClick(it1) }
             }
         }
-    }
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MovieDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MovieDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

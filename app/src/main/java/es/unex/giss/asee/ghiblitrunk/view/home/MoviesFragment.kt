@@ -1,41 +1,32 @@
 package es.unex.giss.asee.ghiblitrunk.view.home
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentMoviesBinding
-import es.unex.giss.asee.ghiblitrunk.login.UserManager
 import es.unex.giss.asee.ghiblitrunk.view.adapters.MovieAdapter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MoviesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MoviesFragment : Fragment() {
 
     private var _binding: FragmentMoviesBinding?=null
     private val binding get() = _binding!!
     private lateinit var adapter: MovieAdapter
 
-    private lateinit var listener: OnMovieClickListener
-
     private val viewModel: MovieViewModel by viewModels { MovieViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
-    interface OnMovieClickListener {
-        fun onMovieClick(movie: Movie)
-    }
+    //region Lifecycle
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,21 +41,12 @@ class MoviesFragment : Fragment() {
         return binding.root
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        if(context is OnMovieClickListener){
-            listener = context
-        }else{
-            throw RuntimeException(context.toString() + " must implement OnMovieClickListener")
-        }
-    }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycleScope.launch { viewModel.user = UserManager.loadCurrentUser(requireContext()) }
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
 
         viewModel.spinner.observe(viewLifecycleOwner) { movie ->
             // TODO: Poner un spinner en la interfaz gráfica
@@ -81,6 +63,17 @@ class MoviesFragment : Fragment() {
         setUpRecyclerView(emptyList())
         subscribeUI(adapter)
     }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // avoid memory leaks
+    }
+
+    //endregion
 
     private fun subscribeUI(adapter: MovieAdapter){
         viewModel.movies.observe(viewLifecycleOwner) { movies ->
@@ -99,15 +92,6 @@ class MoviesFragment : Fragment() {
                 Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null // avoid memory leaks
     }
 
     private fun setupListeners() {
@@ -129,7 +113,7 @@ class MoviesFragment : Fragment() {
             viewModel = viewModel,
             onClickItem =
             {
-                listener.onMovieClick(it)
+                homeViewModel.onMovieClick(it)
             },
             context = context
         )

@@ -1,13 +1,12 @@
 package es.unex.giss.asee.ghiblitrunk.view
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import es.unex.giss.asee.ghiblitrunk.GhibliTrunkApplication
+import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.User
-import es.unex.giss.asee.ghiblitrunk.database.GhibliTrunkDatabase
 import es.unex.giss.asee.ghiblitrunk.databinding.ActivityJoinBinding
 import es.unex.giss.asee.ghiblitrunk.utils.CredentialCheck
 import kotlinx.coroutines.launch
@@ -15,7 +14,7 @@ import kotlinx.coroutines.launch
 class JoinActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityJoinBinding
-    private lateinit var db: GhibliTrunkDatabase
+    private lateinit var repository: Repository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,16 +23,10 @@ class JoinActivity : AppCompatActivity() {
         binding = ActivityJoinBinding.inflate(layoutInflater) //se establece el layout de nuestra activity
         setContentView(binding.root)
 
-        //database instance reference
-        db = GhibliTrunkDatabase.getInstance(applicationContext)!!
+        val appContainer = (this.application as GhibliTrunkApplication).appContainer
+        repository = appContainer.repository
 
-        //views initialization and listeners
-        setUpUI()
         setUpListeners()
-    }
-
-    private fun setUpUI() {
-        //get attributes from xml using binding
     }
 
     private fun setUpListeners() {
@@ -46,9 +39,7 @@ class JoinActivity : AppCompatActivity() {
     }
 
     private fun navigateToHomeActivity(user: User) {
-        val intent = Intent(this, WelcomeActivity::class.java)
-        intent.putExtra("SIGNUP_USER", user)
-        startActivity(intent)
+        WelcomeActivity.start(this, user)
     }
 
     private fun notifyInvalidCredentials(msg: String) {
@@ -67,22 +58,10 @@ class JoinActivity : AppCompatActivity() {
             )
             if (check.fail) notifyInvalidCredentials(check.msg)
             else {
+                val user = User(null, etUser.text.toString(), etPassword.text.toString())
                 lifecycleScope.launch{
-                    val user = User(
-                        null,
-                        etUser.text.toString(),
-                        etPassword.text.toString()
-                    )
-
-                    db?.userDao()?.insert(user)
-
-                    navigateToHomeActivity(
-                        User(
-                            null,
-                            etUser.text.toString(),
-                            etPassword.text.toString()
-                        )
-                    )
+                    repository.insertUser(user)
+                    navigateToHomeActivity(user)
                 }
             }
         }

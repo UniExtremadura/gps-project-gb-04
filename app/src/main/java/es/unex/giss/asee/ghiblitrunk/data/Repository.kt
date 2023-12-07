@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import es.unex.giss.asee.ghiblitrunk.api.ApiService
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
+import es.unex.giss.asee.ghiblitrunk.data.models.User
 import es.unex.giss.asee.ghiblitrunk.database.CharacterDao
 import es.unex.giss.asee.ghiblitrunk.database.MovieDao
+import es.unex.giss.asee.ghiblitrunk.database.UserDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,6 +16,7 @@ import kotlinx.coroutines.launch
 class Repository(
     private val characterDao: CharacterDao,
     private val moviesDao: MovieDao,
+    private val userDao: UserDao,
     private val networkService: ApiService
 ) {
     private var lastUpdateTimeMillis: Long = 0L
@@ -165,6 +168,14 @@ class Repository(
         val lastFetchTimeMillis = lastUpdateTimeMillis
         val timeFromLastFetch = System.currentTimeMillis() - lastFetchTimeMillis
         return timeFromLastFetch > MIN_TIME_FROM_LAST_FETCH_MILLIS || characterDao.getNumberOfCharacters() == 0L
+    }
+
+    suspend fun findUser(userName: String): User {
+        return userDao.find(userName)
+    }
+
+    suspend fun insertUser(user: User): Long{
+        return userDao.insert(user)
     }
 
     companion object {
