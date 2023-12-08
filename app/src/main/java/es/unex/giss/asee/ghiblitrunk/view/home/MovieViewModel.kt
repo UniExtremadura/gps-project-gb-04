@@ -1,5 +1,6 @@
 package es.unex.giss.asee.ghiblitrunk.view.home
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -81,12 +82,14 @@ class MovieViewModel (
         viewModelScope.launch {
             repository.deleteMovieFromLibrary(movie, user!!.userId!!)
             _toast.value = "Movie unliked!"
+            updateFavoritesMovies()
         }
     }
 
     fun updateFavoritesMovies() {
         viewModelScope.launch {
             val favorites = repository.getFavoritesMovies()
+            Log.e("MOVIE_VIEW_MODEL", favorites.toString())
             _favoriteMovies.value = favorites
         }
     }

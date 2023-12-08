@@ -82,6 +82,7 @@ class CharacterViewModel (
         viewModelScope.launch {
             repository.deleteCharacterFromLibrary(character, user!!.userId!!)
             _toast.value = "Character unliked!"
+            updateFavoritesCharacters()
         }
     }
 
