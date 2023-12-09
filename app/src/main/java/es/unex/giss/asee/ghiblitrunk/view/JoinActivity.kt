@@ -60,7 +60,8 @@ class JoinActivity : AppCompatActivity() {
             else {
                 val user = User(null, etUser.text.toString(), etPassword.text.toString())
                 lifecycleScope.launch{
-                    repository.insertUser(user)
+                    val userId = repository.insertUser(user)
+                    user.userId = userId
                     navigateToHomeActivity(user)
                 }
             }
