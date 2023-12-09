@@ -56,7 +56,7 @@ class LoginActivity : AppCompatActivity() {
         // With is used
         with(binding) {
             btLogin.setOnClickListener {checkLogin() }
-            btJoin.setOnClickListener {navigateToJoinActivity() }
+            tvJoin.setOnClickListener {navigateToJoinActivity() }
             btPasswordForget.setOnClickListener { navigateToForgetPasswordActivity() }
         }
 

@@ -63,7 +63,7 @@
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="34sp"
+        android:textSize="30sp"
 
         app:layout_constraintBottom_toBottomOf="@+id/imageViewBackground"
         app:layout_constraintEnd_toEndOf="parent"
