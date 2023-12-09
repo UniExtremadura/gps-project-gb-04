@@ -55,8 +55,8 @@ class MovieDetailFragment : Fragment() {
             tvTitle.text = movie?.title
             tvOriginalTitle.text = movie?.original_title
 
-            // Mostramos la imagen
-            val imageName = movie?.title?.lowercase()?.replace(" ", "_")?.replace("'", "") // Formato para buscar la imagen
+            // Mostramos la imagen del siguiente formato
+            val imageName = "poster_" + movie?.title?.lowercase()?.replace(" ", "_")?.replace("'", "")
             // Obtener el ID de la imagen
             val resourceId = context?.resources?.getIdentifier(imageName, "drawable", context?.packageName)
             Log.e("MOVIE_ADAPTER", "El ID del recurso para $imageName es: $resourceId")

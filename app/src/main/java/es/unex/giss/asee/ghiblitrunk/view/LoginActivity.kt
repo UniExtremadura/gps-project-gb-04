@@ -83,7 +83,8 @@ class LoginActivity : AppCompatActivity() {
     private fun checkLogin() {
         lifecycleScope.launch {
             try {
-                val user = repository.findUser(binding.etUsername.text.toString())
+                val trimmedUsername = binding.etUsername.text.toString().trim() // Elimina espacios en blanco al inicio y final
+                val user = repository.findUser(trimmedUsername)
                 handleLoginResult(user)
             } catch (e: Exception) {
                 notifyInvalidCredentials("Error during login")

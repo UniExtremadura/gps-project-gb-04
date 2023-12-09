@@ -20,8 +20,8 @@
         <ImageView
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:scaleType="centerCrop"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
             android:background="#FEE1D4"/>
 
         <!-- Título de la película -->
@@ -36,12 +36,22 @@
             android:fontFamily="@font/open_sans_semibold"
             android:textColor="#E23155" />
 
-        <!-- Descripción -->
+        <!-- Fecha de lanzamiento -->
         <TextView
-            android:id="@+id/tv_description"
+            android:id="@+id/tv_releaseDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title"
+            android:layout_marginTop="8dp"
+            android:textColor="#000000"
+            android:fontFamily="@font/open_sans_semibold" />
+
+        <!-- Director -->
+        <TextView
+            android:id="@+id/tv_director"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_releaseDate"
             android:layout_marginTop="8dp"
             android:textColor="#000000"
             android:fontFamily="@font/open_sans_semibold" />
@@ -54,7 +64,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="10dp"
             android:layout_marginTop="10dp"
-            android:layout_below="@+id/tv_description"
+            android:layout_below="@+id/tv_director"
             android:background="@drawable/ic_favorite"/>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
