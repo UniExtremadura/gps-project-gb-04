@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
@@ -45,6 +46,7 @@ class HomeActivity : AppCompatActivity(),
         ){
             val intent = Intent(context, HomeActivity::class.java).apply{
                 putExtra(USER_INFO, user)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
             context.startActivity(intent)
         }
@@ -129,16 +131,6 @@ class HomeActivity : AppCompatActivity(),
     fun onCommentClick(movie: Movie) {
         val action = MovieDetailFragmentDirections.actionMovieDetailFragmentToCommentsFragment(movie)
         navController.navigate(action)
-    }
-
-    // TODO: revisar por si hay que eliminar esto
-    override fun onBackPressed() {
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

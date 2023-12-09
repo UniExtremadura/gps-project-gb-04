@@ -18,20 +18,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var repository: Repository
 
-    private val responseLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                //TODO get data from result and update IU
-                val name = ""
-                val password = ""
-                Toast.makeText(
-                    this@LoginActivity,
-                    "New user ($name/$password) created",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {  //el primer método de ciclo de vida de un activity es el onCreate()
         super.onCreate(savedInstanceState)
         //view binding and set content view
