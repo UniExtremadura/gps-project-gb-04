@@ -1,6 +1,7 @@
 package es.unex.giss.asee.ghiblitrunk.data
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import es.unex.giss.asee.ghiblitrunk.api.ApiService
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
@@ -197,6 +198,20 @@ class Repository(
         moviesDao.insertAndRelate(movie, userId)
     }
 
+    // region Barra de búsqueda
+    fun searchMoviesByTitle(title: String): LiveData<List<Movie>> {
+        return moviesDao.searchMoviesByTitle("%$title%")
+    }
+
+    fun searchMoviesByDate(date: String): LiveData<List<Movie>> {
+        return moviesDao.searchMoviesByDate("$date%")
+    }
+
+    fun searchMoviesByDirector(director: String): LiveData<List<Movie>> {
+        return moviesDao.searchMoviesByDirector("%$director%")
+    }
+
+    // endregion
     companion object {
         private const val MIN_TIME_FROM_LAST_FETCH_MILLIS: Long = 30000
     }

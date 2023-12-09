@@ -100,6 +100,31 @@ class MovieViewModel (
         }
     }
 
+    private val _searchResults = MutableLiveData<List<Movie>>()
+    val searchResults: LiveData<List<Movie>>
+        get() = _searchResults
+
+    private var currentFilter: String = "" // Esta variable guarda el filtro seleccionado
+
+    fun setSearchFilter(filter: String) {
+        currentFilter = filter
+    }
+
+    fun searchMoviesByFilter(query: String) {
+        viewModelScope.launch {
+            val searchResults = when (currentFilter) {
+                "Search by Title" -> repository.searchMoviesByTitle(query)
+                "Search by Date" -> repository.searchMoviesByDate(query)
+                "Search by Director" -> repository.searchMoviesByDirector(query)
+                else -> MutableLiveData<List<Movie>>() // Esto podría variar según el tipo de LiveData que devuelve tu repositorio
+            }
+
+            searchResults.observeForever { movies ->
+                _searchResults.value = movies
+            }
+        }
+    }
+
     companion object{
 
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {

@@ -1,14 +1,20 @@
 package es.unex.giss.asee.ghiblitrunk.view.home
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import es.unex.giss.asee.ghiblitrunk.R
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentMoviesBinding
 import es.unex.giss.asee.ghiblitrunk.view.adapters.MovieAdapter
@@ -41,6 +47,8 @@ class MoviesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.setSearchFilter("Search by Title")
 
         homeViewModel.user.observe(viewLifecycleOwner) { user ->
             viewModel.user = user
@@ -78,14 +86,56 @@ class MoviesFragment : Fragment() {
     private fun setupListeners() {
         // Gestión de los filtros
         with(binding){
-            ibFilter.setOnClickListener {
-                // TODO: iniciar el activity de filtros
-                // val intent = Intent(activity, FilterActivity::class.java)
-                //startActivity(intent)
+            ivFilter.setOnClickListener {
+                showFilterDialog()
+            }
+
+            etSearch.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val searchText = s.toString()
+                    viewModel.searchMoviesByFilter(searchText)
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
+            viewModel.searchResults.observe(viewLifecycleOwner) { movies ->
+                adapter.updateData(movies)
             }
         }
     }
 
+    private fun showFilterDialog() {
+        var hint = ""
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filter, null)
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setTitle("Select Filter")
+
+        val alertDialog = dialogBuilder.create()
+        alertDialog.show()
+
+        dialogView.findViewById<RadioButton>(R.id.radioTitle).setOnClickListener {
+            hint = "Search by Title"
+        }
+
+        dialogView.findViewById<RadioButton>(R.id.radioDate).setOnClickListener {
+            hint = "Search by Date"
+        }
+
+        dialogView.findViewById<RadioButton>(R.id.radioDirector).setOnClickListener {
+            hint = "Search by Director"
+        }
+
+        // Botón de Aceptar
+        dialogView.findViewById<Button>(R.id.btnAccept).setOnClickListener {
+            viewModel.setSearchFilter(hint)
+            binding.etSearch.hint = hint
+            alertDialog.dismiss() // Cierra el diálogo al hacer clic en "Aceptar"
+        }
+    }
 
     private fun setUpRecyclerView(moviesList: List<Movie>){
         // Actualizar el RecyclerView con la lista combinada

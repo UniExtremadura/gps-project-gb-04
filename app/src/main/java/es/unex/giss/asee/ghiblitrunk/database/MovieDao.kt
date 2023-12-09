@@ -72,4 +72,16 @@ interface MovieDao {
         }
 
     }
+
+    // region Barra de búsqueda
+    @Query("SELECT * FROM movies WHERE title LIKE :title")
+    fun searchMoviesByTitle(title: String): LiveData<List<Movie>>
+
+    @Query("SELECT * FROM movies WHERE release_date LIKE :date")
+    fun searchMoviesByDate(date: String): LiveData<List<Movie>>
+
+    @Query("SELECT * FROM movies WHERE director LIKE :director")
+    fun searchMoviesByDirector(director: String): LiveData<List<Movie>>
+
+    // endregion
 }

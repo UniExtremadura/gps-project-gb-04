@@ -50,7 +50,7 @@ class JoinActivity : AppCompatActivity() {
         with(binding) {
             val check = CredentialCheck.join(
                 etFirstname.text.toString(),
-                etSecondname.text.toString(),
+                etLastName.text.toString(),
                 etUser.text.toString(),
                 etEmail.text.toString(),
                 etPassword.text.toString(),
