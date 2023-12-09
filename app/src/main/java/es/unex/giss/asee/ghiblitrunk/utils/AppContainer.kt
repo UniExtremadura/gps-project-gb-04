@@ -9,5 +9,5 @@ class AppContainer(context: Context) {
 
     private val networkService = RetrofitClient.apiService
     private val db = GhibliTrunkDatabase.getInstance(context!!)
-    val repository = Repository(db.characterDao(), db.movieDao(), db.userDao(), networkService)
+    val repository = Repository(db.characterDao(), db.movieDao(), db.userDao(), db.commentDao(), networkService)
 }

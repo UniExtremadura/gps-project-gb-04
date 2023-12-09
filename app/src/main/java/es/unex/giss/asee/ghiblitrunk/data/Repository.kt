@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import es.unex.giss.asee.ghiblitrunk.api.ApiService
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
+import es.unex.giss.asee.ghiblitrunk.data.models.Comment
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.data.models.User
 import es.unex.giss.asee.ghiblitrunk.database.CharacterDao
+import es.unex.giss.asee.ghiblitrunk.database.CommentDao
 import es.unex.giss.asee.ghiblitrunk.database.MovieDao
 import es.unex.giss.asee.ghiblitrunk.database.UserDao
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +19,7 @@ class Repository(
     private val characterDao: CharacterDao,
     private val moviesDao: MovieDao,
     private val userDao: UserDao,
+    private val commentDao: CommentDao,
     private val networkService: ApiService
 ) {
     private var lastUpdateTimeMillis: Long = 0L
@@ -76,6 +79,18 @@ class Repository(
         return moviesDao.getFavorites()
     }
 
+    //endregion
+
+    //region Comments
+    suspend fun getCommentsForMovie(movieId: String): List<Comment> {
+        return commentDao.getCommentsForMovie(movieId)
+    }
+
+    suspend fun addCommentToMovie(movieId: String, userId: Long, comment: String) {
+        val currentComments = commentDao.getCommentsForMovie(movieId).toMutableList()
+        currentComments.add(Comment(userId = userId, movieId = movieId, text = comment)) // Asumiendo userId 0 por defecto
+        commentDao.insertComment(Comment(userId = userId, movieId = movieId, text = comment)) // Insertar el nuevo comentario
+    }
     //endregion
 
     //region Data Fetch
@@ -176,6 +191,10 @@ class Repository(
 
     suspend fun insertUser(user: User): Long{
         return userDao.insert(user)
+    }
+
+    suspend fun insertAndRelate(movie: Movie, userId: Long) {
+        moviesDao.insertAndRelate(movie, userId)
     }
 
     companion object {

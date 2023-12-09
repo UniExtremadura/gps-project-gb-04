@@ -22,20 +22,32 @@
             android:id="@+id/tv_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NOM_USUARIO"
+            android:text="USER_NAME"
             android:textColor="#E23155"
             android:textStyle="bold"
             android:fontFamily="@font/open_sans_semibold" />
 
-        <!-- Reseña -->
+        <!-- Comentario -->
         <TextView
-            android:id="@+id/tv_review"
+            android:id="@+id/tv_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_username"
             android:layout_marginTop="8dp"
-            android:text="contenido_reseña"
+            android:text="comment_content"
             android:textColor="#000000"
             android:fontFamily="@font/open_sans_semibold" />
+
+        <!-- Fecha de publicación -->
+        <TextView
+            android:id="@+id/tv_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_comment"
+            android:layout_marginTop="8dp"
+            android:text="time_stamp"
+            android:textColor="#808080"
+            android:fontFamily="@font/open_sans_semibold" />
+
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

@@ -1,53 +1,50 @@
 package es.unex.giss.asee.ghiblitrunk.view.adapters
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import es.unex.giss.asee.ghiblitrunk.data.models.Comment
-import es.unex.giss.asee.ghiblitrunk.databinding.ItemReviewBinding
+import es.unex.giss.asee.ghiblitrunk.databinding.ItemCommentBinding
 import es.unex.giss.asee.ghiblitrunk.view.home.HomeViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 class CommentAdapter(
-    private var reviewsList: List<Comment>,
-    private val coroutineScope: CoroutineScope,
+    private var commentsList: List<Comment>,
     private val homeViewModel: HomeViewModel,
     private val context: Context?
-) : RecyclerView.Adapter<CommentAdapter.ReviewViewHolder>() {
+) : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
-    class ReviewViewHolder(
-        private val binding: ItemReviewBinding,
-        private val coroutineScope: CoroutineScope,
+    class CommentViewHolder(
+        private val binding: ItemCommentBinding,
         private val homeViewModel: HomeViewModel,
         private val context: Context?
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, totalItems: Int) {
-            coroutineScope.launch { // Lanzar una corrutina
-                val username = context?.let { homeViewModel.user }
-                with(binding) {
-                    tvUsername.text = username.toString()
-                    tvReview.text = comment.content
-                }
+        fun bind(comment: Comment) {
+            val username = context?.let { homeViewModel.user.value?.name}
+            with(binding) {
+                tvUsername.text = username.toString()
+                tvComment.text = comment.text
+                tvTimestamp.text = comment.timestamp.toString()
             }
         }
     }
 
-    override fun getItemCount() = reviewsList.size
+    override fun getItemCount() = commentsList.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemReviewBinding.inflate(inflater, parent, false)
-        return ReviewViewHolder(binding, coroutineScope, homeViewModel, context)
+        val binding = ItemCommentBinding.inflate(inflater, parent, false)
+        return CommentViewHolder(binding, homeViewModel, context)
     }
 
-    override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        val review = reviewsList[position]
-        holder.bind(review, reviewsList.size)
+    override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
+        val comment = commentsList[position]
+        holder.bind(comment)
     }
 
     fun updateData(updatedComments: List<Comment>) {
-        reviewsList = updatedComments
+        Log.d("COMMENT_ADAPTER", updatedComments.toString())
+        commentsList = updatedComments
         notifyDataSetChanged()
     }
 }

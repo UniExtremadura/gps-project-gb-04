@@ -1,5 +1,6 @@
 package es.unex.giss.asee.ghiblitrunk.database
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
@@ -8,21 +9,20 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.data.models.UserMovieCrossRef
 import es.unex.giss.asee.ghiblitrunk.data.models.UserWithMovies
 
 @Dao
 interface MovieDao {
-    @Insert
+    @Query("SELECT * FROM movies WHERE id = :id")
+    suspend fun findMovie(id: String): Movie
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(movie: Movie)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(movies: List<Movie>)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertUserMovie(crossRef: UserMovieCrossRef)
 
     @Delete
     suspend fun delete(movie: Movie)
@@ -51,4 +51,25 @@ interface MovieDao {
     @Transaction
     @Query("SELECT * FROM User where userId = :userId")
     fun getUserWithMovies(userId: Long): LiveData<UserWithMovies>
+
+    // Relacionar un usuario a una noticia
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertUserMovie(crossRef: UserMovieCrossRef)
+
+    @Transaction
+    suspend fun insertAndRelate(movie: Movie, userId: Long) {
+        val foundMovie = findMovie(movie.id)
+        if (foundMovie != null) {
+            // La noticia ya existe, obtener el ID existente
+            Log.e("MOVIE_DAO", "Movie already exists. ID: $foundMovie")
+            foundMovie.id?.let { UserMovieCrossRef(userId, it) }?.let { insertUserMovie(it) }
+
+        } else {
+            // La noticia no existe, realizar la inserción
+            insert(movie)
+            Log.d("MOVIE_DAO", "Movie is being inserted. Its id is: $movie.id")
+            insertUserMovie(UserMovieCrossRef(userId, movie.id))
+        }
+
+    }
 }

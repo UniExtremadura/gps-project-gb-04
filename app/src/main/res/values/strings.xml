@@ -41,5 +41,8 @@
     <string name="close_nav">Close Navigation Drawer</string>
     <string name="history_title">HISTORY</string>
     <string name="comment_button">Leave a comment...</string>
+    <string name="comments_section">COMMENTS</string>
+    <string name="write_a_comment">Write a comment...</string>
+    <string name="sent_button">Sent</string>
 
 </resources>

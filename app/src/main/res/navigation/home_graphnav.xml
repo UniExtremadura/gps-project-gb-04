@@ -57,5 +57,12 @@
     <fragment
         android:id="@+id/libraryFragment"
         android:name="es.unex.giss.asee.ghiblitrunk.view.home.favorite.LibraryFragment"
-        android:label="LibraryFragment" />
+        android:label="LibraryFragment" >
+        <action
+            android:id="@+id/action_libraryFragment_to_movieDetailFragment"
+            app:destination="@id/movieDetailFragment" />
+        <action
+            android:id="@+id/action_libraryFragment_to_characterDetailFragment"
+            app:destination="@id/characterDetailFragment" />
+    </fragment>
 </navigation>

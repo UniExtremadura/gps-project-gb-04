@@ -9,8 +9,11 @@ import es.unex.giss.asee.ghiblitrunk.data.models.Comment
 @Dao
 interface CommentDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertReview(comment: Comment)
+    suspend fun insertComment(comment: Comment)
 
-    @Query("SELECT * FROM Comment WHERE userId = :userId AND newsId = :newsId")
-    suspend fun getUserReviews(userId: Long, newsId: Long): List<Comment>
+    @Query("SELECT * FROM comments WHERE movieId = :movieId")
+    suspend fun getCommentsForMovie(movieId: String): List<Comment>
+
+    @Query("DELETE FROM comments WHERE commentId = :commentId")
+    suspend fun deleteComment(commentId: Long)
 }

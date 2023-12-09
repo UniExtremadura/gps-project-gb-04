@@ -8,13 +8,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentMoviesBinding
 import es.unex.giss.asee.ghiblitrunk.view.adapters.MovieAdapter
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 
 class MoviesFragment : Fragment() {
@@ -29,7 +26,8 @@ class MoviesFragment : Fragment() {
     //region Lifecycle
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Utilizamos View Binding para inflar el diseño
@@ -64,10 +62,6 @@ class MoviesFragment : Fragment() {
         subscribeUI(adapter)
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // avoid memory leaks
@@ -78,19 +72,6 @@ class MoviesFragment : Fragment() {
     private fun subscribeUI(adapter: MovieAdapter){
         viewModel.movies.observe(viewLifecycleOwner) { movies ->
             adapter.updateData(movies)
-        }
-    }
-
-    private fun launchDataLoad(block: suspend () -> Unit): Job {
-        return lifecycleScope.launch {
-            try {
-                // TODO: Poner un spinner en la interfaz
-                // binding.spinner.visibility = View.VISIBLE
-                block()
-            }catch (exception: Exception){
-                Exception("MoviesFragment error: ${exception.message}")
-                Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
-            }
         }
     }
 

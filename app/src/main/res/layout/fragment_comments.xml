@@ -13,7 +13,7 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RESEÑAS"
+        android:text="@string/comments_section"
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="#E23155"
@@ -24,38 +24,38 @@
 
     <!-- RecyclerView para mostrar reseñas -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_reviews_list"
+        android:id="@+id/rv_comments_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/et_review"
+        app:layout_constraintBottom_toTopOf="@+id/et_comment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
     <!-- Entrada de texto para la reseña -->
     <EditText
-        android:id="@+id/et_review"
+        android:id="@+id/et_comment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="70dp"
-        android:hint="Escribe una reseña..."
+        android:hint="@string/write_a_comment"
         android:fontFamily="@font/open_sans_semibold"
         android:textColorHint="#A9A9A9"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_reviews_list" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_comments_list" />
 
     <!-- Botón de enviar reseña -->
     <Button
         android:id="@+id/btn_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enviar"
+        android:text="@string/sent_button"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
