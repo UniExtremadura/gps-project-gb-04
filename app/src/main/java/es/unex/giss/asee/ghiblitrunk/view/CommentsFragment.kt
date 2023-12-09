@@ -79,11 +79,10 @@ class CommentsFragment : Fragment() {
                 val comment = etComment.text.toString().trim()
                 if (viewModel.isValidComment(comment)) {
                     // Añade el comentario a la película
-                    // TODO: corregir lo del userId obtenido del usuario actual, porque al parecer es nulo
-                    // val userId = homeViewModel.userInSession?.userId
-                    if (true) {
-                        viewModel.insertAndRelate(movie, 1)
-                        viewModel.addCommentToMovie(movie.id, 1, comment)
+                    val userId = homeViewModel.user.value?.userId
+                    if (userId != null) {
+                        viewModel.insertAndRelate(movie, userId)
+                        viewModel.addCommentToMovie(movie.id, userId, comment)
                         etComment.text.clear() // Limpia el campo de entrada
                     } else {
                         Log.e("COMMENTS_FRAG", "El userId es nulo")
