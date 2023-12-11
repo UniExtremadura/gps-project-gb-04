@@ -22,6 +22,19 @@
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteY="37dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_login_title"
+        android:textSize="35dp"
+        android:fontFamily="@font/montserrat_alternates_bold"
+        android:id="@+id/tv_app_title"
+        android:paddingVertical="10dp"
+        />
+
     <EditText
         android:id="@+id/et_username"
         android:layout_width="300dp"
@@ -39,7 +52,7 @@
         tools:textColorHint="#808080"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login_title" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_app_title" />
 
 
     <EditText

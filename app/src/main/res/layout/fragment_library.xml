@@ -5,14 +5,10 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
+        style="@style/AppTabLayout"
+        app:tabTextAppearance="@style/AppTabTextAppearance"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="?attr/colorPrimary"
-        android:elevation="6dp"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:tabTextColor="@color/black"/>
+        />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"

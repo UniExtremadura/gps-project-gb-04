@@ -58,12 +58,21 @@
     <fragment
         android:id="@+id/libraryFragment"
         android:name="es.unex.giss.asee.ghiblitrunk.view.home.favorite.LibraryFragment"
-        android:label="LibraryFragment" >
+        android:label="LibraryFragment" />
+    <fragment
+        android:id="@+id/favMoviesFragment"
+        android:name="es.unex.giss.asee.ghiblitrunk.view.home.favorite.FavMoviesFragment"
+        android:label="FavMoviesFragment" >
         <action
-            android:id="@+id/action_libraryFragment_to_movieDetailFragment"
+            android:id="@+id/action_favMoviesFragment_to_movieDetailFragment"
             app:destination="@id/movieDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favCharactersFragment"
+        android:name="es.unex.giss.asee.ghiblitrunk.view.home.favorite.FavCharactersFragment"
+        android:label="FavCharactersFragment" >
         <action
-            android:id="@+id/action_libraryFragment_to_characterDetailFragment"
+            android:id="@+id/action_favCharactersFragment_to_characterDetailFragment"
             app:destination="@id/characterDetailFragment" />
     </fragment>
 </navigation>

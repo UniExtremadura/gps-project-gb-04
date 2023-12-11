@@ -41,8 +41,7 @@ class LibraryFragment : Fragment() {
         // TabLayout
         viewPager = binding.viewPager
         tabLayout = binding.tabLayout
-        // Después de inicializar tabLayout
-        tabLayout.setSelectedTabIndicator(R.drawable.tab_indicator)
+
         setUpTabLayout()
         //loadFavorites()
     }
