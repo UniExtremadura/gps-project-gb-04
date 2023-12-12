@@ -9,11 +9,11 @@ import java.io.Serializable
 @Entity(tableName = "characters")
 data class Character(
     @PrimaryKey val id: String = "",
-    val name: String = "",
-    val gender: String = "",
-    val age: String = "",
-    val eye_color: String = "",
-    val hair_color: String = "",
+    var name: String = "",
+    var gender: String = "",
+    var age: String = "",
+    var eye_color: String = "",
+    var hair_color: String = "",
     @TypeConverters(Converters::class) val films: List<String> = emptyList(),
     val species: String = "",
     val url: String = "",

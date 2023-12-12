@@ -115,6 +115,7 @@ dependencies {
     testImplementation ("junit:junit:4.13.2")
     testImplementation ("org.mockito:mockito-core:3.12.4") // Reemplaza 3.x con la versión más reciente
     testImplementation ("androidx.test:core:1.4.0") // Reemplaza 1.x con la versión más reciente
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
 
     ////////////////////////////////////
     //////////// TABLAYOUT /////////////
