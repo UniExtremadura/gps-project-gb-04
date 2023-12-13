@@ -13,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import es.unex.giss.asee.ghiblitrunk.HomeGraphnavDirections
 import es.unex.giss.asee.ghiblitrunk.R
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
@@ -120,12 +121,12 @@ class HomeActivity : AppCompatActivity(),
     }
 
     fun onMovieClick(movie: Movie) {
-        val action = MoviesFragmentDirections.actionMoviesFragmentToMovieDetailFragment(movie)
+        val action = HomeGraphnavDirections.actionGlobalMovieDetailFragment(movie)
         navController.navigate(action)
     }
 
     fun onCharacterClick(character: Character) {
-        val action = CharactersFragmentDirections.actionCharactersFragmentToCharacterDetailFragment(character)
+        val action = HomeGraphnavDirections.actionGlobalCharacterDetailFragment(character)
         navController.navigate(action)
     }
 
