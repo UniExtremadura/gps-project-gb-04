@@ -211,6 +211,22 @@ open class Repository(
         return moviesDao.searchMoviesByDirector("%$director%")
     }
 
+    suspend fun insertMovie(movie: Movie){
+        moviesDao.insert(movie)
+    }
+
+    suspend fun insertCharacter(character: Character){
+        characterDao.insert(character)
+    }
+
+    suspend fun deleteMovie(movie: Movie){
+        moviesDao.delete(movie)
+    }
+
+    suspend fun deleteCharacter(character: Character){
+        characterDao.delete(character)
+    }
+
     // endregion
     companion object {
         private const val MIN_TIME_FROM_LAST_FETCH_MILLIS: Long = 30000
