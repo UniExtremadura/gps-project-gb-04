@@ -104,7 +104,7 @@ class MovieViewModel (
     val searchResults: LiveData<List<Movie>>
         get() = _searchResults
 
-    private var currentFilter: String = "" // Esta variable guarda el filtro seleccionado
+    var currentFilter: String = "" // Esta variable guarda el filtro seleccionado
 
     fun setSearchFilter(filter: String) {
         currentFilter = filter
@@ -122,6 +122,12 @@ class MovieViewModel (
             searchResults.observeForever { movies ->
                 _searchResults.value = movies
             }
+        }
+    }
+
+    fun setMovieDetail(movie: Movie){
+        viewModelScope.launch {
+            _movieDetail.value = movie
         }
     }
 

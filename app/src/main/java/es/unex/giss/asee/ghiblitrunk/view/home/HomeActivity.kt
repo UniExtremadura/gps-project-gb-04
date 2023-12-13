@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
@@ -85,6 +84,8 @@ class HomeActivity : AppCompatActivity(),
         moviesFragment = MoviesFragment()
         charactersFragment = CharactersFragment()
         libraryFragment = LibraryFragment()
+
+        binding.toolbar.title = ""
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         binding.bottomNavigation.setupWithNavController(navHostFragment.navController)

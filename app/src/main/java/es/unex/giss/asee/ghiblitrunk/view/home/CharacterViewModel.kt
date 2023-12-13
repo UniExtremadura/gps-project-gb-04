@@ -100,6 +100,12 @@ class CharacterViewModel (
         }
     }
 
+    fun setCharacterDetail(character: Character){
+        viewModelScope.launch {
+            _characterDetail.value = character
+        }
+    }
+
 
     companion object{
 
