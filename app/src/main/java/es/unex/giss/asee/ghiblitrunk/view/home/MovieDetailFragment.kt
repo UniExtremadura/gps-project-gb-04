@@ -59,7 +59,7 @@ class MovieDetailFragment : Fragment() {
             val imageName = "poster_" + movie?.title?.lowercase()?.replace(" ", "_")?.replace("'", "")
             // Obtener el ID de la imagen
             val resourceId = context?.resources?.getIdentifier(imageName, "drawable", context?.packageName)
-            Log.e("MOVIE_ADAPTER", "El ID del recurso para $imageName es: $resourceId")
+            Log.e("MOVIE_DETAIL_FRAG", "El ID del recurso para $imageName es: $resourceId")
 
             if (resourceId != null && resourceId != 0) {
                 // Si encontramos el recurso lo añadimos al imageView

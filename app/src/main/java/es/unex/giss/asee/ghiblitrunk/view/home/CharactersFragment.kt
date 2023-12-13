@@ -75,14 +75,7 @@ class CharactersFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        // Gestión de los filtros
-        with(binding){
-            ibFilter.setOnClickListener {
-                // TODO: iniciar el activity de filtros
-                // val intent = Intent(activity, FilterActivity::class.java)
-                //startActivity(intent)
-            }
-        }
+
     }
 
     private fun setUpRecyclerView(charactersList: List<Character>){

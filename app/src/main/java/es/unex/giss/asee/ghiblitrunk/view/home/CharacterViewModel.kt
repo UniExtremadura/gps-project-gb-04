@@ -94,7 +94,7 @@ class CharacterViewModel (
         }
     }
 
-    fun fetchMovieDetail(character: Character){
+    fun fetchCharacterDetail(character: Character){
         viewModelScope.launch {
             _characterDetail.value = repository.fetchCharacterDetail(character.id)
         }
