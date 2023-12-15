@@ -89,9 +89,6 @@ dependencies {
     // Testing Navigation
     androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
 
-    // Jetpack Compose Integration
-    implementation("androidx.navigation:navigation-compose:$nav_version")
-
     ////////////////////////////////////
     /////////// API ////////////////////
     ////////////////////////////////////

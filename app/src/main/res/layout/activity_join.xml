@@ -10,7 +10,7 @@
     tools:context="es.unex.giss.asee.ghiblitrunk.view.JoinActivity">
 
     <TextView
-        android:id="@+id/et_title"
+        android:id="@+id/tv_joinTitle"
         android:layout_width="309dp"
         android:layout_height="59dp"
         android:layout_marginTop="28dp"
