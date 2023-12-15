@@ -1,10 +1,15 @@
 package es.unex.giss.asee.ghiblitrunk.view.home
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +17,7 @@ import es.unex.giss.asee.ghiblitrunk.databinding.FragmentCharactersBinding
 import es.unex.giss.asee.ghiblitrunk.view.adapters.CharacterAdapter
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import androidx.fragment.app.viewModels
+import es.unex.giss.asee.ghiblitrunk.R
 
 class CharactersFragment : Fragment() {
 
@@ -75,7 +81,57 @@ class CharactersFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        // Gestión de los filtros
+        with(binding){
+            ivFilter.setOnClickListener {
+                showFilterDialog()
+            }
 
+            etSearch.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val searchText = s.toString()
+                    viewModel.searchMoviesByFilter(searchText)
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
+            viewModel.searchResults.observe(viewLifecycleOwner) { movies ->
+                adapter.updateData(movies)
+            }
+        }
+    }
+
+    private fun showFilterDialog() {
+        var hint = ""
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filter, null)
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setTitle("Select Filter")
+
+        val alertDialog = dialogBuilder.create()
+        alertDialog.show()
+
+        dialogView.findViewById<RadioButton>(R.id.radioTitle).setOnClickListener {
+            hint = "Search by Name"
+        }
+
+        dialogView.findViewById<RadioButton>(R.id.radioDate).setOnClickListener {
+            hint = "Search by Age"
+        }
+
+        dialogView.findViewById<RadioButton>(R.id.radioDirector).setOnClickListener {
+            hint = "Search by Gender"
+        }
+
+        // Botón de Aceptar
+        dialogView.findViewById<Button>(R.id.btnAccept).setOnClickListener {
+            viewModel.setSearchFilter(hint)
+            binding.etSearch.hint = hint
+            alertDialog.dismiss() // Cierra el diálogo al hacer clic en "Aceptar"
+        }
     }
 
     private fun setUpRecyclerView(charactersList: List<Character>){

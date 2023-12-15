@@ -53,4 +53,18 @@ interface CharacterDao {
     @Transaction
     @Query("SELECT * FROM User where userId = :userId")
     fun getUserWithCharacters(userId: Long): LiveData<UserWithCharacters>
+
+
+
+    // region Barra de búsqueda
+    @Query("SELECT * FROM characters WHERE name LIKE :name")
+    fun searchCharactersByName(name: String): LiveData<List<Character>>
+
+    @Query("SELECT * FROM characters WHERE age LIKE :age")
+    fun searchCharactersByAge(age: String): LiveData<List<Character>>
+
+    @Query("SELECT * FROM characters WHERE gender LIKE :gender")
+    fun searchCharactersByGender(gender: String): LiveData<List<Character>>
+
+    // endregion
 }
