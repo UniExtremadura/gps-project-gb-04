@@ -16,15 +16,15 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Imagen del personaje -->
+        <!-- Imagen de la película -->
         <ImageView
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:scaleType="centerCrop"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
             android:background="#FEE1D4"/>
 
-        <!-- Título del personaje -->
+        <!-- Título de la película -->
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
@@ -33,18 +33,28 @@
             android:layout_marginTop="16dp"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:fontFamily="@font/open_sans_semibold"
+            android:fontFamily="@font/montserrat_alternates_bold"
             android:textColor="#E23155" />
 
-        <!-- Descripción del personaje -->
+        <!-- Fecha de lanzamiento -->
         <TextView
-            android:id="@+id/tv_description"
+            android:id="@+id/tv_releaseDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title"
             android:layout_marginTop="8dp"
             android:textColor="#000000"
-            android:fontFamily="@font/open_sans_semibold" />
+            android:fontFamily="@font/montserrat_alternates" />
+
+        <!-- Director -->
+        <TextView
+            android:id="@+id/tv_director"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_releaseDate"
+            android:layout_marginTop="8dp"
+            android:textColor="#000000"
+            android:fontFamily="@font/montserrat_alternates" />
 
         <!-- Me Gusta -->
         <Button
@@ -54,7 +64,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="10dp"
             android:layout_marginTop="10dp"
-            android:layout_below="@+id/tv_description"
-            android:background="@drawable/baseline_favorite_border_24"/>
+            android:layout_below="@+id/tv_director"
+            android:background="@drawable/ic_favorite"/>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

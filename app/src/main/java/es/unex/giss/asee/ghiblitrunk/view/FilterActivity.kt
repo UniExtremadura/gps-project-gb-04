@@ -1,10 +1,10 @@
 package es.unex.giss.asee.ghiblitrunk.view
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import es.unex.giss.asee.ghiblitrunk.databinding.ActivityFilterBinding
 
+// TODO: Hacer algo con los filtros
 class FilterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFilterBinding
     override fun onCreate(savedInstanceState: Bundle?) {

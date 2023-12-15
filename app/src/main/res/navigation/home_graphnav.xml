@@ -5,24 +5,13 @@
     android:id="@+id/home_graphnav"
     app:startDestination="@id/moviesFragment">
 
-    <!-- TODO: Definir GRAPHNAV -->
-
-    <fragment
-        android:id="@+id/charactersFragment"
-        android:name="es.unex.giss.asee.ghiblitrunk.view.home.CharactersFragment"
-        android:label="CharactersFragment" >
-        <action
-            android:id="@+id/action_charactersFragment_to_characterDetailFragment"
-            app:destination="@id/characterDetailFragment" />
-    </fragment>
+    <!-- MOVIES -->
     <fragment
         android:id="@+id/moviesFragment"
         android:name="es.unex.giss.asee.ghiblitrunk.view.home.MoviesFragment"
-        android:label="MoviesFragment" >
-        <action
-            android:id="@+id/action_moviesFragment_to_movieDetailFragment"
-            app:destination="@id/movieDetailFragment" />
+        android:label="MoviesFragment">
     </fragment>
+
     <fragment
         android:id="@+id/movieDetailFragment"
         android:name="es.unex.giss.asee.ghiblitrunk.view.home.MovieDetailFragment"
@@ -32,9 +21,25 @@
             android:name="movie"
             app:argType="es.unex.giss.asee.ghiblitrunk.data.models.Movie" />
         <action
-            android:id="@+id/action_movieDetailFragment_to_reviewsFragment"
-            app:destination="@id/reviewsFragment" />
+            android:id="@+id/action_movieDetailFragment_to_commentsFragment"
+            app:destination="@id/commentsFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/commentsFragment"
+        android:name="es.unex.giss.asee.ghiblitrunk.view.CommentsFragment"
+        android:label="CommentsFragment" >
+        <argument
+            android:name="movie"
+            app:argType="es.unex.giss.asee.ghiblitrunk.data.models.Movie" />
+    </fragment>
+
+    <!-- CHARACTERS -->
+    <fragment
+        android:id="@+id/charactersFragment"
+        android:name="es.unex.giss.asee.ghiblitrunk.view.home.CharactersFragment"
+        android:label="CharactersFragment" />
+
     <fragment
         android:id="@+id/characterDetailFragment"
         android:name="es.unex.giss.asee.ghiblitrunk.view.home.CharacterDetailFragment"
@@ -44,12 +49,18 @@
             android:name="character"
             app:argType="es.unex.giss.asee.ghiblitrunk.data.models.Character" />
     </fragment>
+
+    <!-- LIBRARY -->
     <fragment
-        android:id="@+id/reviewsFragment"
-        android:name="es.unex.giss.asee.ghiblitrunk.view.ReviewsFragment"
-        android:label="ReviewsFragment" >
-        <argument
-            android:name="movie"
-            app:argType="es.unex.giss.asee.ghiblitrunk.data.models.Movie" />
-    </fragment>
+        android:id="@+id/libraryFragment"
+        android:name="es.unex.giss.asee.ghiblitrunk.view.home.favorite.LibraryFragment"
+        android:label="LibraryFragment" />
+
+    <action
+        android:id="@+id/action_global_movieDetailFragment"
+        app:destination="@id/movieDetailFragment"/>
+
+    <action
+        android:id="@+id/action_global_characterDetailFragment"
+        app:destination="@id/characterDetailFragment"/>
 </navigation>

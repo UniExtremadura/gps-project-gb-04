@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_margin="10dp"
     card_view:cardBackgroundColor="#FFFFFF"
     card_view:cardCornerRadius="20dp"
@@ -11,50 +12,63 @@
     card_view:contentPadding="4dp">
 
     <!-- Contenido de la tarjeta -->
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <!-- Imagen de la película -->
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:scaleType="fitCenter"
+        android:layout_marginStart="10dp"
+        android:background="#FEE1D4"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-        <!-- Imagen de la película -->
-        <ImageView
-            android:id="@+id/iv_image"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:scaleType="centerCrop"
-            android:background="#FEE1D4"/>
+    <!-- Botón "Me Gusta" -->
 
-        <!-- Título de la película -->
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/iv_image"
-            android:layout_marginTop="16dp"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/open_sans_semibold"
-            android:textColor="#E23155" />
+        <!-- Contenedor para título y género -->
 
-        <!-- Descripción de la película -->
-        <TextView
-            android:id="@+id/tv_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_title"
-            android:layout_marginTop="8dp"
-            android:textColor="#000000"
-            android:fontFamily="@font/open_sans_semibold" />
-
-        <!-- Me Gusta -->
         <Button
             android:id="@+id/iv_like"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/tv_description"
-            android:background="@drawable/baseline_favorite_border_24"/>
-    </RelativeLayout>
+            android:background="@drawable/ic_favorite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@id/iv_image"
+            app:layout_constraintTop_toTopOf="@id/iv_image"
+            app:layout_constraintBottom_toTopOf="@id/iv_like">
+
+            <!-- Nombre del personaje -->
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_semibold"
+                android:textColor="#E23155"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!-- Género del personaje-->
+            <TextView
+                android:id="@+id/tv_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:fontFamily="@font/open_sans_semibold" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

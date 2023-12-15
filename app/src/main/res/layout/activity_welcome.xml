@@ -4,54 +4,72 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#191C2E"
-    android:paddingHorizontal="10dp"
-    android:paddingVertical="50dp"
     tools:context=".view.WelcomeActivity">
 
+    <!-- Fondo de imagen -->
     <ImageView
-        android:id="@+id/tv_login_title"
-        android:layout_width="366dp"
-        android:layout_height="302dp"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_launcher_background"
+        android:id="@+id/imageViewBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/app_wallpaper_welcome"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Fondo translúcido -->
+    <View
+        android:id="@+id/translucentBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageViewBackground"
+        app:layout_constraintVertical_bias="0.084" />
+
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="262dp"
+        android:layout_height="84dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+
+        android:fontFamily="@font/montserrat_alternates_bold"
+        android:padding="16dp"
+        android:text="Ghibli Trunk"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewBackground"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintVertical_bias="0.973" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:id="@+id/welcome"
+        android:layout_width="249dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/montserrat_alternates"
-        android:text="@string/welcome_msg"
-        android:textAllCaps="false"
-        android:textColor="#ED3257"
-        android:textSize="12sp"
-        android:textStyle="bold|italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login_title"
-        tools:ignore="MissingConstraints" />
+        android:layout_marginStart="150dp"
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="192dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
         android:fontFamily="@font/montserrat_alternates_bold"
+        android:padding="16dp"
+        android:text="Welcome"
         android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="34sp"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewBackground"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.752"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.057" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

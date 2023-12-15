@@ -1,43 +1,35 @@
 package es.unex.giss.asee.ghiblitrunk.view.home
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import es.unex.giss.asee.ghiblitrunk.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import es.unex.giss.asee.ghiblitrunk.data.Repository
+import es.unex.giss.asee.ghiblitrunk.data.models.Character
+import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentCharacterDetailBinding
-import es.unex.giss.asee.ghiblitrunk.databinding.FragmentMovieDetailBinding
+import es.unex.giss.asee.ghiblitrunk.view.adapters.CharacterAdapter
+import es.unex.giss.asee.ghiblitrunk.view.adapters.LittleMovieAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CharacterDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CharacterDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private val args: CharacterDetailFragmentArgs by navArgs()
     private var _binding: FragmentCharacterDetailBinding?=null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
+    private lateinit var adapter: LittleMovieAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private val characterViewModel: CharacterViewModel by viewModels { CharacterViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
+
+    private val TAG = "CharacterDetailFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,43 +42,90 @@ class CharacterDetailFragment : Fragment() {
         return binding.root
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val character = args.character
 
-        with(binding){
-            // Establecer valores al título y a la descripción
-            // tvTitle.text = character.title
-            // tvContent.text = character.content
+        characterViewModel.fetchCharacterDetail(character)
 
-            // Configurar el like si existe
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            characterViewModel.user = user
         }
 
-        Log.d("CharacterDetailFragment","Showing character details")
+        characterViewModel.toast.observe(viewLifecycleOwner) {text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                characterViewModel.onToastShown()
+            }
+        }
+
+        Log.d(TAG, "Fetching ${character.name} details")
+        characterViewModel.characterDetail.observe(viewLifecycleOwner) { character ->
+            showBinding(character)
+            Log.d(TAG,"Showing ${character.name} details")
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CharacterDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CharacterDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun showBinding(character: Character?) {
+        with(binding) {
+            tvName.text = character?.name
+            tvGender.text = character?.gender
+            tvOtherInfo.text =
+                "This character is ${character?.age} years old and has ${character?.eye_color?.lowercase()} eyes and ${character?.hair_color?.lowercase()} hair."
+
+            // Mostramos la imagen del siguiente formato
+            val imageName =
+                "portrait_" + character?.name?.lowercase()?.replace(" ", "_")?.replace("'", "")
+            // Obtener el ID de la imagen
+            val resourceId =
+                context?.resources?.getIdentifier(imageName, "drawable", context?.packageName)
+            Log.e("CHARACTER_DETAIL_FRAG", "El ID del recurso para $imageName es: $resourceId")
+
+            if (resourceId != null && resourceId != 0) {
+                // Si encontramos el recurso lo añadimos al imageView
+                context?.let {
+                    Glide.with(it)
+                        .load(resourceId)
+                        .into(ivPortrait)
+                }
+            } else {
+                // Si no se encuentra, ocultamos el ImageView
+                binding.ivPortrait.visibility = View.GONE
+            }
+
+            // Mostrar las películas relacionadas
+            if (character != null) {
+                characterViewModel.getMoviesRelated(character.films).observe(viewLifecycleOwner) { moviesRelated ->
+                    moviesRelated?.let {
+                        setUpRecyclerView(it)
+                    }
                 }
             }
+
+            // Configurar el botón de like
+            ivLike.setOnClickListener {
+                if (character != null) {
+                    characterViewModel.onClickLike(character)
+                }
+            }
+        }
+    }
+
+    private fun setUpRecyclerView(movieList: List<Movie>){
+        // Actualizar el RecyclerView con la lista combinada
+        adapter = LittleMovieAdapter(
+            movieList,
+            onClickItem =
+            {
+                homeViewModel.onMovieClick(it)
+            },
+            context = context
+        )
+
+        with(binding){
+            rvMoviesList.layoutManager = LinearLayoutManager(context)
+            rvMoviesList.adapter = adapter
+        }
     }
 }

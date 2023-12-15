@@ -1,49 +1,30 @@
 package es.unex.giss.asee.ghiblitrunk.view.home
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import es.unex.giss.asee.ghiblitrunk.R
+import com.bumptech.glide.Glide
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentMovieDetailBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MovieDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MovieDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private val args: MovieDetailFragmentArgs by navArgs()
     private var _binding: FragmentMovieDetailBinding?=null
-    private val binding get() = _binding!!
+    val binding
+        get() = _binding!!
 
-    private lateinit var listener: OnCommentClickListener
+    private val movieViewModel: MovieViewModel by viewModels { MovieViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
-    interface OnCommentClickListener {
-        fun onCommentClick(movies: Movie, fragmentId: Int)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private val TAG = "MovieDetailFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,52 +37,85 @@ class MovieDetailFragment : Fragment() {
         return binding.root
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if(context is OnCommentClickListener){
-            listener = context
-        } else {
-            throw RuntimeException("$context must implement OnCommentClickListener")
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val movie = args.movie
+        movieViewModel.fetchMovieDetail(movie)
 
-        with(binding){
-            // Establecer valores al título y a la descripción
-            // tvTitle.text = movie.title
-            // tvContent.text = movie.content
-
-            // Configurar el like si existe
-
-            // Configurar el botón de comentar
-            /*btnComment.setOnClickListener {
-                listener.onCommentClick(news, R.id.movieDetailFragment)
-            }*/
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            movieViewModel.user = user
         }
 
-        Log.d("MovieDetailFragment","Showing movie details")
+        movieViewModel.toast.observe(viewLifecycleOwner) {text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                movieViewModel.onToastShown()
+            }
+        }
+
+        Log.d(TAG, "Fetching ${movie.title} details")
+        movieViewModel.movieDetail.observe(viewLifecycleOwner) { movie ->
+            showBinding(movie)
+            Log.d(TAG,"Showing ${movie.title} details")
+        }
     }
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MovieDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MovieDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+
+    private fun showBinding(movie: Movie?){
+        with(binding){
+            // Establecer los detalles de la película
+            tvTitle.text = movie?.title
+            tvOriginalTitle.text = movie?.original_title
+
+            // Mostramos la imagen del siguiente formato
+            val imageName = "poster_" + movie?.title?.lowercase()?.replace(" ", "_")?.replace("'", "")
+            // Obtener el ID de la imagen
+            val resourceId = context?.resources?.getIdentifier(imageName, "drawable", context?.packageName)
+            Log.e("MOVIE_DETAIL_FRAG", "El ID del recurso para $imageName es: $resourceId")
+
+            if (resourceId != null && resourceId != 0) {
+                // Si encontramos el recurso lo añadimos al imageView
+                context?.let {
+                    Glide.with(it)
+                        .load(resourceId)
+                        .into(ivPoster)
+                }
+            } else {
+                // Si no se encuentra, ocultamos el ImageView
+                binding.ivPoster.visibility = View.GONE
+            }
+
+            tvDescription.text = movie?.description
+
+            if(movie?.director != ""){
+                tvDirector.text = "Director: ${movie?.director}"
+            }else{
+                tvProducer.text = "Director: Anonymous"
+            }
+
+            if(movie?.producer != ""){
+                tvProducer.text = "Producer: ${movie?.producer}"
+            }else{
+                tvProducer.text = "Producer: Anonymous"
+            }
+
+            if(movie?.release_date != ""){
+                tvReleaseDate.text = "Release date: ${movie?.release_date}"
+            }else{
+                tvReleaseDate.text = "Release date: Anonymous"
+            }
+
+            // Configurar el botón de like
+            ivLike.setOnClickListener {
+                if (movie != null) {
+                    movieViewModel.onClickLike(movie)
                 }
             }
+
+            // Configurar el botón de comentar
+            btnWriteComment.setOnClickListener {
+                movie?.let { it1 -> homeViewModel.onCommentClick(it1) }
+            }
+        }
     }
 }

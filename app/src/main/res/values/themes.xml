@@ -6,4 +6,9 @@
     </style>
 
     <style name="Theme.GhibliTrunk" parent="Base.Theme.GhibliTrunk" />
+    <style name="Toolbar" parent="ThemeOverlay.AppCompat.ActionBar">
+        // toolbar title color
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:background">#6750A4</item>
+    </style>
 </resources>

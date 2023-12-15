@@ -1,54 +1,39 @@
 package es.unex.giss.asee.ghiblitrunk.view.home
 
-import android.content.Context
+import android.app.AlertDialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.RadioButton
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import es.unex.giss.asee.ghiblitrunk.R
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
-import es.unex.giss.asee.ghiblitrunk.database.GhibliTrunkDatabase
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentMoviesBinding
 import es.unex.giss.asee.ghiblitrunk.view.adapters.MovieAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MoviesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MoviesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    private lateinit var db: GhibliTrunkDatabase
 
     private var _binding: FragmentMoviesBinding?=null
     private val binding get() = _binding!!
     private lateinit var adapter: MovieAdapter
 
-    private lateinit var listener: OnMovieClickListener
-    interface OnMovieClickListener {
-        fun onMovieClick(movie: Movie)
-    }
+    private val viewModel: MovieViewModel by viewModels { MovieViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    //region Lifecycle
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Utilizamos View Binding para inflar el diseño
@@ -60,24 +45,29 @@ class MoviesFragment : Fragment() {
         return binding.root
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        db = GhibliTrunkDatabase.getInstance(context)!!
-        if(context is OnMovieClickListener){
-            listener = context
-        }else{
-            throw RuntimeException(context.toString() + " must implement onNewsClickListener")
-        }
-    }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpMoviesFeed()
-    }
-    override fun onResume() {
-        super.onResume()
-        setUpMoviesFeed()
+
+        viewModel.setSearchFilter("Search by Title")
+
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
+
+        viewModel.spinner.observe(viewLifecycleOwner) { movie ->
+            // TODO: Poner un spinner en la interfaz gráfica
+            //binding.spinner.visibility = if (movie) View.VISIBLE else View.GONE
+        }
+
+        viewModel.toast.observe(viewLifecycleOwner) {text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
+            }
+        }
+
+        setUpRecyclerView(emptyList())
+        subscribeUI(adapter)
     }
 
     override fun onDestroyView() {
@@ -85,28 +75,76 @@ class MoviesFragment : Fragment() {
         _binding = null // avoid memory leaks
     }
 
+    //endregion
+
+    private fun subscribeUI(adapter: MovieAdapter){
+        viewModel.movies.observe(viewLifecycleOwner) { movies ->
+            adapter.updateData(movies)
+        }
+    }
+
     private fun setupListeners() {
         // Gestión de los filtros
         with(binding){
-            ibFilter.setOnClickListener {
-                // TODO: iniciar el activity de filtros
-                // val intent = Intent(activity, FilterActivity::class.java)
-                //startActivity(intent)
+            ivFilter.setOnClickListener {
+                showFilterDialog()
+            }
+
+            etSearch.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val searchText = s.toString()
+                    viewModel.searchMoviesByFilter(searchText)
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
+            viewModel.searchResults.observe(viewLifecycleOwner) { movies ->
+                adapter.updateData(movies)
             }
         }
     }
 
-    private fun setUpMoviesFeed() {
-        // TODO: obtener las películas de la API
-        // TODO: Gestionar los filtros
+    private fun showFilterDialog() {
+        var hint = ""
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filter, null)
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setTitle("Select Filter")
+
+        val alertDialog = dialogBuilder.create()
+        alertDialog.show()
+
+        dialogView.findViewById<RadioButton>(R.id.radioTitle).setOnClickListener {
+            hint = "Search by Title"
+        }
+
+        dialogView.findViewById<RadioButton>(R.id.radioDate).setOnClickListener {
+            hint = "Search by Date"
+        }
+
+        dialogView.findViewById<RadioButton>(R.id.radioDirector).setOnClickListener {
+            hint = "Search by Director"
+        }
+
+        // Botón de Aceptar
+        dialogView.findViewById<Button>(R.id.btnAccept).setOnClickListener {
+            viewModel.setSearchFilter(hint)
+            binding.etSearch.hint = hint
+            alertDialog.dismiss() // Cierra el diálogo al hacer clic en "Aceptar"
+        }
     }
+
     private fun setUpRecyclerView(moviesList: List<Movie>){
         // Actualizar el RecyclerView con la lista combinada
         adapter = MovieAdapter(
             moviesList,
+            viewModel = viewModel,
             onClickItem =
             {
-                listener.onMovieClick(it)
+                homeViewModel.onMovieClick(it)
             },
             context = context
         )
@@ -117,23 +155,4 @@ class MoviesFragment : Fragment() {
         }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MoviesFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MoviesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }
