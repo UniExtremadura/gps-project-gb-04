@@ -45,7 +45,9 @@ class MovieViewModel (
     }
 
     fun onToastShown(){
-        _toast.value = null
+        viewModelScope.launch {
+            _toast.value = null
+        }
     }
 
     private fun launchDataLoad(block: suspend () -> Unit): Job {

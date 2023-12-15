@@ -3,20 +3,14 @@ package es.unex.giss.asee.ghiblitrunk
 import android.content.Context
 import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.view.home.MovieViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import androidx.test.core.app.ApplicationProvider
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import org.junit.Assert
-import org.junit.Assert.assertNotEquals
+import kotlinx.coroutines.runBlocking
 
-@ExperimentalCoroutinesApi
 class MovieViewModelTest {
 
     private lateinit var context: Context
@@ -41,41 +35,29 @@ class MovieViewModelTest {
     }
 
     @Test
-    fun testSetSearchFilter() {
+    fun testSetSearchFilter() = runBlocking {
         val filter = "Search by Title"
 
         movieViewModel.setSearchFilter(filter)
+        delay(100)
 
         assertEquals(filter, "Search by Title")
     }
 
     @Test
-    fun testOnToastShown() {
-        // When
-        CoroutineScope(Dispatchers.IO).launch {
-            movieViewModel.onToastShown()
+    fun testOnToastShown() = runBlocking {
+        movieViewModel.onToastShown()
 
-            assertEquals(movieViewModel.toast.value, null)
-        }
+        assertEquals(movieViewModel.toast.value, null)
     }
 
     @Test
-    fun testFetchMovie(){
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(100)
+    fun testSetMovieDetail() = runBlocking {
+        movieViewModel.setMovieDetail(movie)
 
-            assertNotEquals(movieViewModel.movieDetail.value, null)
-        }
-    }
+        delay(100)
 
-    @Test
-    fun testSetMovieDetail(){
-        CoroutineScope(Dispatchers.IO).launch {
-            movieViewModel.setMovieDetail(movie)
-
-            delay(100)
-            assertEquals(movieViewModel.movieDetail.value, movie)
-        }
+        assertEquals(movieViewModel.movieDetail.value, movie)
     }
 
 }

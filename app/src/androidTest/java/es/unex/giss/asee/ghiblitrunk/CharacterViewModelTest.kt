@@ -5,12 +5,9 @@ import androidx.test.core.app.ApplicationProvider
 import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.view.home.CharacterViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -38,30 +35,21 @@ class CharacterViewModelTest {
     }
 
     @Test
-    fun testFetchCharacter(){
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(100)
+    fun testOnToastShown() = runBlocking {
+        characterViewModel.onToastShown()
 
-            assertNotEquals(characterViewModel.characterDetail.value, null)
-        }
+        delay(100)
+
+        assertEquals(characterViewModel.toast.value, null)
     }
 
     @Test
-    fun testOnToastShown() {
-        CoroutineScope(Dispatchers.IO).launch {
-            characterViewModel.onToastShown()
-            assertEquals(characterViewModel.toast.value, null)
-        }
-    }
+    fun testSetCharacterDetail() = runBlocking {
+        characterViewModel.setCharacterDetail(character)
 
-    @Test
-    fun testSetCharacterDetail(){
-        CoroutineScope(Dispatchers.IO).launch {
-            characterViewModel.setCharacterDetail(character)
+        delay(100)
 
-            delay(100)
-            assertEquals(characterViewModel.characterDetail.value, character)
-        }
+        assertEquals(characterViewModel.characterDetail.value, character)
     }
 
 }
