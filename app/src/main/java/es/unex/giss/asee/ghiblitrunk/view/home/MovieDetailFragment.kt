@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
@@ -41,6 +42,17 @@ class MovieDetailFragment : Fragment() {
 
         val movie = args.movie
         movieViewModel.fetchMovieDetail(movie)
+
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            movieViewModel.user = user
+        }
+
+        movieViewModel.toast.observe(viewLifecycleOwner) {text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                movieViewModel.onToastShown()
+            }
+        }
 
         Log.d(TAG, "Fetching ${movie.title} details")
         movieViewModel.movieDetail.observe(viewLifecycleOwner) { movie ->
@@ -93,7 +105,12 @@ class MovieDetailFragment : Fragment() {
                 tvReleaseDate.text = "Release date: Anonymous"
             }
 
-            // Configurar el like si existe
+            // Configurar el botón de like
+            ivLike.setOnClickListener {
+                if (movie != null) {
+                    movieViewModel.onClickLike(movie)
+                }
+            }
 
             // Configurar el botón de comentar
             btnWriteComment.setOnClickListener {

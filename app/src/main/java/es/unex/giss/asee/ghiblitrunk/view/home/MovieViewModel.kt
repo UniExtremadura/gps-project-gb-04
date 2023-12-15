@@ -118,7 +118,7 @@ class MovieViewModel (
                 "Search by Title" -> repository.searchMoviesByTitle(query)
                 "Search by Date" -> repository.searchMoviesByDate(query)
                 "Search by Director" -> repository.searchMoviesByDirector(query)
-                else -> MutableLiveData<List<Movie>>() // Esto podría variar según el tipo de LiveData que devuelve tu repositorio
+                else -> MutableLiveData<List<Movie>>()
             }
 
             searchResults.observeForever { movies ->

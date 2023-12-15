@@ -5,21 +5,29 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
+import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentCharacterDetailBinding
+import es.unex.giss.asee.ghiblitrunk.view.adapters.CharacterAdapter
+import es.unex.giss.asee.ghiblitrunk.view.adapters.LittleMovieAdapter
 
 class CharacterDetailFragment : Fragment() {
 
     private val args: CharacterDetailFragmentArgs by navArgs()
     private var _binding: FragmentCharacterDetailBinding?=null
-    val binding
-        get() = _binding!!
+    val binding get() = _binding!!
+    private lateinit var adapter: LittleMovieAdapter
 
     private val characterViewModel: CharacterViewModel by viewModels { CharacterViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     private val TAG = "CharacterDetailFragment"
 
@@ -41,6 +49,17 @@ class CharacterDetailFragment : Fragment() {
 
         characterViewModel.fetchCharacterDetail(character)
 
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            characterViewModel.user = user
+        }
+
+        characterViewModel.toast.observe(viewLifecycleOwner) {text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                characterViewModel.onToastShown()
+            }
+        }
+
         Log.d(TAG, "Fetching ${character.name} details")
         characterViewModel.characterDetail.observe(viewLifecycleOwner) { character ->
             showBinding(character)
@@ -48,16 +67,19 @@ class CharacterDetailFragment : Fragment() {
         }
     }
 
-    private fun showBinding(character: Character?){
-        with(binding){
+    private fun showBinding(character: Character?) {
+        with(binding) {
             tvName.text = character?.name
             tvGender.text = character?.gender
-            tvOtherInfo.text = "This character is ${character?.age} years old and has ${character?.eye_color?.lowercase()} eyes and ${character?.hair_color?.lowercase()} hair."
+            tvOtherInfo.text =
+                "This character is ${character?.age} years old and has ${character?.eye_color?.lowercase()} eyes and ${character?.hair_color?.lowercase()} hair."
 
             // Mostramos la imagen del siguiente formato
-            val imageName = "portrait_" + character?.name?.lowercase()?.replace(" ", "_")?.replace("'", "")
+            val imageName =
+                "portrait_" + character?.name?.lowercase()?.replace(" ", "_")?.replace("'", "")
             // Obtener el ID de la imagen
-            val resourceId = context?.resources?.getIdentifier(imageName, "drawable", context?.packageName)
+            val resourceId =
+                context?.resources?.getIdentifier(imageName, "drawable", context?.packageName)
             Log.e("CHARACTER_DETAIL_FRAG", "El ID del recurso para $imageName es: $resourceId")
 
             if (resourceId != null && resourceId != 0) {
@@ -72,7 +94,38 @@ class CharacterDetailFragment : Fragment() {
                 binding.ivPortrait.visibility = View.GONE
             }
 
-            // TODO: mostrar las películas de las que forma parte
+            // Mostrar las películas relacionadas
+            if (character != null) {
+                characterViewModel.getMoviesRelated(character.films).observe(viewLifecycleOwner) { moviesRelated ->
+                    moviesRelated?.let {
+                        setUpRecyclerView(it)
+                    }
+                }
+            }
+
+            // Configurar el botón de like
+            ivLike.setOnClickListener {
+                if (character != null) {
+                    characterViewModel.onClickLike(character)
+                }
+            }
+        }
+    }
+
+    private fun setUpRecyclerView(movieList: List<Movie>){
+        // Actualizar el RecyclerView con la lista combinada
+        adapter = LittleMovieAdapter(
+            movieList,
+            onClickItem =
+            {
+                homeViewModel.onMovieClick(it)
+            },
+            context = context
+        )
+
+        with(binding){
+            rvMoviesList.layoutManager = LinearLayoutManager(context)
+            rvMoviesList.adapter = adapter
         }
     }
 }

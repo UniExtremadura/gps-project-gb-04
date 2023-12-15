@@ -190,6 +190,14 @@ open class Repository(
         return userDao.find(userName)
     }
 
+    suspend fun findMovieById(id: String): Movie{
+        return moviesDao.findMovieById(id)
+    }
+
+    suspend fun findMovieByUrl(url: String): Movie{
+        return moviesDao.findMovieByUrl(url)
+    }
+
     suspend fun insertUser(user: User): Long{
         return userDao.insert(user)
     }
@@ -211,6 +219,19 @@ open class Repository(
         return moviesDao.searchMoviesByDirector("%$director%")
     }
 
+    fun searchCharactersByName(name: String): LiveData<List<Character>> {
+        return characterDao.searchCharactersByName("%$name%")
+    }
+
+    fun searchCharactersByAge(age: String): LiveData<List<Character>> {
+        return characterDao.searchCharactersByAge("$age%")
+    }
+
+    fun searchCharactersByGender(director: String): LiveData<List<Character>> {
+        return characterDao.searchCharactersByGender("%$director%")
+    }
+    // endregion
+
     suspend fun insertMovie(movie: Movie){
         moviesDao.insert(movie)
     }
@@ -228,6 +249,21 @@ open class Repository(
     }
 
     // endregion
+
+    suspend fun getMoviesRelated(moviesUrls: List<String>): List<Movie> {
+        val moviesRelated: MutableList<Movie> = mutableListOf()
+
+        moviesUrls.forEach { movieUrl ->
+            try {
+                val movie = findMovieByUrl(movieUrl)
+                moviesRelated.add(movie)
+            } catch (e: Exception) {
+                Log.e("REPOSITORY", "Error fetching movie with URL: $movieUrl")
+            }
+        }
+
+        return moviesRelated
+    }
     companion object {
         private const val MIN_TIME_FROM_LAST_FETCH_MILLIS: Long = 30000
     }

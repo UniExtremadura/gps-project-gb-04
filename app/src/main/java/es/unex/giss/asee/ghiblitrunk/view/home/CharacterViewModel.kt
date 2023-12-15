@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import es.unex.giss.asee.ghiblitrunk.GhibliTrunkApplication
 import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
+import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.data.models.User
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -106,6 +107,47 @@ class CharacterViewModel (
         viewModelScope.launch {
             _characterDetail.value = character
         }
+    }
+
+    private val _searchResults = MutableLiveData<List<Character>>()
+    val searchResults: LiveData<List<Character>>
+        get() = _searchResults
+
+    var currentFilter: String = "" // Esta variable guarda el filtro seleccionado
+
+    fun setSearchFilter(filter: String) {
+        currentFilter = filter
+    }
+
+    fun searchMoviesByFilter(query: String) {
+        viewModelScope.launch {
+            val searchResults = when (currentFilter) {
+                "Search by Title" -> repository.searchCharactersByName(query)
+                "Search by Age" -> repository.searchCharactersByAge(query)
+                "Search by Gender" -> repository.searchCharactersByGender(query)
+                else -> MutableLiveData<List<Character>>()
+            }
+
+            searchResults.observeForever { characters ->
+                _searchResults.value = characters
+            }
+        }
+    }
+
+    fun getMoviesRelated(moviesUrls: List<String>): LiveData<List<Movie>> {
+        val moviesRelated = MutableLiveData<List<Movie>>()
+
+        viewModelScope.launch {
+            val moviesList = repository.getMoviesRelated(moviesUrls)
+            Log.d("VIEWMODEL", "el tamaño de la lista es ${moviesList.size}")
+            moviesList.forEachIndexed { index, movie ->
+                Log.d("VIEWMODEL", "Índice $index: ${movie.title}")
+            }
+
+            moviesRelated.postValue(moviesList)
+        }
+
+        return moviesRelated
     }
 
 
