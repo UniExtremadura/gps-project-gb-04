@@ -2,6 +2,7 @@ package es.unex.giss.asee.ghiblitrunk.database
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import es.unex.giss.asee.ghiblitrunk.data.models.User
 
@@ -10,6 +11,6 @@ interface UserDao {
     @Query("SELECT * FROM user WHERE name LIKE :first LIMIT 1")
     suspend fun find(first: String): User
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(user: User): Long
 }
