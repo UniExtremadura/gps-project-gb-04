@@ -16,7 +16,10 @@ import es.unex.giss.asee.ghiblitrunk.data.models.UserWithMovies
 @Dao
 interface MovieDao {
     @Query("SELECT * FROM movies WHERE id = :id")
-    suspend fun findMovie(id: String): Movie
+    suspend fun findMovieById(id: String): Movie
+
+    @Query("SELECT * FROM movies WHERE url = :url")
+    suspend fun findMovieByUrl(url: String): Movie
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(movie: Movie)
@@ -42,9 +45,6 @@ interface MovieDao {
     @Query("SELECT * FROM movies")
     fun getAllMovies(): LiveData<List<Movie>>
 
-    @Query("SELECT * FROM movies WHERE id = :id")
-    suspend fun getMovieById(id: String): Movie
-
     @Update
     suspend fun update(movie: Movie)
 
@@ -58,7 +58,7 @@ interface MovieDao {
 
     @Transaction
     suspend fun insertAndRelate(movie: Movie, userId: Long) {
-        val foundMovie = findMovie(movie.id)
+        val foundMovie = findMovieById(movie.id)
         if (foundMovie != null) {
             // La noticia ya existe, obtener el ID existente
             Log.e("MOVIE_DAO", "Movie already exists. ID: $foundMovie")
