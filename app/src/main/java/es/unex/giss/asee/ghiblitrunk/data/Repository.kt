@@ -227,8 +227,8 @@ open class Repository(
         return characterDao.searchCharactersByAge("$age%")
     }
 
-    fun searchCharactersByGender(director: String): LiveData<List<Character>> {
-        return characterDao.searchCharactersByGender("%$director%")
+    fun searchCharactersByGender(gender: String): LiveData<List<Character>> {
+        return characterDao.searchCharactersByGender("$gender%")
     }
     // endregion
 

@@ -119,10 +119,10 @@ class CharacterViewModel (
         currentFilter = filter
     }
 
-    fun searchMoviesByFilter(query: String) {
+    fun searchCharactersByFilter(query: String) {
         viewModelScope.launch {
             val searchResults = when (currentFilter) {
-                "Search by Title" -> repository.searchCharactersByName(query)
+                "Search by Name" -> repository.searchCharactersByName(query)
                 "Search by Age" -> repository.searchCharactersByAge(query)
                 "Search by Gender" -> repository.searchCharactersByGender(query)
                 else -> MutableLiveData<List<Character>>()

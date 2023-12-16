@@ -48,7 +48,9 @@ class MoviesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.setSearchFilter("Search by Title")
+        // Establecemos los valores de la barra de búsqueda
+        binding.etSearch.hint = viewModel.currentFilter
+        viewModel.setSearchFilter(viewModel.currentFilter)
 
         homeViewModel.user.observe(viewLifecycleOwner) { user ->
             viewModel.user = user
@@ -69,6 +71,12 @@ class MoviesFragment : Fragment() {
         setUpRecyclerView(emptyList())
         subscribeUI(adapter)
     }
+
+    override fun onResume() {
+        super.onResume()
+        binding.etSearch.text.clear() // Esto limpia el texto de la barra de búsqueda al regresar al fragmento
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -112,27 +120,45 @@ class MoviesFragment : Fragment() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filter, null)
         val dialogBuilder = AlertDialog.Builder(requireContext())
             .setView(dialogView)
-            .setTitle("Select Filter")
+            .setTitle("Filter by...")
 
         val alertDialog = dialogBuilder.create()
         alertDialog.show()
 
-        dialogView.findViewById<RadioButton>(R.id.radioTitle).setOnClickListener {
+        // Mostrar las opciones del filtro
+        dialogView.findViewById<RadioButton>(R.id.rb_option_1).text = "Title"
+        dialogView.findViewById<RadioButton>(R.id.rb_option_2).text = "Release date"
+        dialogView.findViewById<RadioButton>(R.id.rb_option_3).text = "Director"
+
+        // Mostrar la selección anterior del usuario si hubo
+        when (viewModel.currentFilter) {
+            "Search by Title" -> dialogView.findViewById<RadioButton>(R.id.rb_option_1).isChecked = true
+            "Search by Release Date" -> dialogView.findViewById<RadioButton>(R.id.rb_option_2).isChecked = true
+            "Search by Director" -> dialogView.findViewById<RadioButton>(R.id.rb_option_3).isChecked = true
+            else -> {} // Manejar el caso predeterminado si es necesario
+        }
+
+        // Establecer la visualización del nuevo filtrado
+        dialogView.findViewById<RadioButton>(R.id.rb_option_1).setOnClickListener {
             hint = "Search by Title"
         }
 
-        dialogView.findViewById<RadioButton>(R.id.radioDate).setOnClickListener {
+        dialogView.findViewById<RadioButton>(R.id.rb_option_2).setOnClickListener {
             hint = "Search by Date"
         }
 
-        dialogView.findViewById<RadioButton>(R.id.radioDirector).setOnClickListener {
+        dialogView.findViewById<RadioButton>(R.id.rb_option_3).setOnClickListener {
             hint = "Search by Director"
         }
 
         // Botón de Aceptar
         dialogView.findViewById<Button>(R.id.btnAccept).setOnClickListener {
+            // Limpiamos la barra de búsqueda
+            binding.etSearch.text.clear()
+            // Mostramos el nuevo tipo de búsqueda
             viewModel.setSearchFilter(hint)
             binding.etSearch.hint = hint
+            // Cerramos el popup
             alertDialog.dismiss() // Cierra el diálogo al hacer clic en "Aceptar"
         }
     }

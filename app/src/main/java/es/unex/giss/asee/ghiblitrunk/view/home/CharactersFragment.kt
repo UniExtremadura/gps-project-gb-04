@@ -47,6 +47,10 @@ class CharactersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Establecemos los valores de la barra de búsqueda
+        binding.etSearch.hint = viewModel.currentFilter
+        viewModel.setSearchFilter(viewModel.currentFilter)
+
         homeViewModel.user.observe(viewLifecycleOwner) { user ->
             viewModel.user = user
         }
@@ -67,6 +71,11 @@ class CharactersFragment : Fragment() {
         subscribeUI(adapter)
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.etSearch.text.clear() // Esto limpia el texto de la barra de búsqueda al regresar al fragmento
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // avoid memory leaks
@@ -77,60 +86,6 @@ class CharactersFragment : Fragment() {
     private fun subscribeUI(adapter: CharacterAdapter){
         viewModel.characters.observe(viewLifecycleOwner) { characters ->
             adapter.updateData(characters)
-        }
-    }
-
-    private fun setupListeners() {
-        // Gestión de los filtros
-        with(binding){
-            ivFilter.setOnClickListener {
-                showFilterDialog()
-            }
-
-            etSearch.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val searchText = s.toString()
-                    viewModel.searchMoviesByFilter(searchText)
-                }
-
-                override fun afterTextChanged(s: Editable?) {}
-            })
-
-            viewModel.searchResults.observe(viewLifecycleOwner) { movies ->
-                adapter.updateData(movies)
-            }
-        }
-    }
-
-    private fun showFilterDialog() {
-        var hint = ""
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filter, null)
-        val dialogBuilder = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .setTitle("Select Filter")
-
-        val alertDialog = dialogBuilder.create()
-        alertDialog.show()
-
-        dialogView.findViewById<RadioButton>(R.id.radioTitle).setOnClickListener {
-            hint = "Search by Name"
-        }
-
-        dialogView.findViewById<RadioButton>(R.id.radioDate).setOnClickListener {
-            hint = "Search by Age"
-        }
-
-        dialogView.findViewById<RadioButton>(R.id.radioDirector).setOnClickListener {
-            hint = "Search by Gender"
-        }
-
-        // Botón de Aceptar
-        dialogView.findViewById<Button>(R.id.btnAccept).setOnClickListener {
-            viewModel.setSearchFilter(hint)
-            binding.etSearch.hint = hint
-            alertDialog.dismiss() // Cierra el diálogo al hacer clic en "Aceptar"
         }
     }
 
@@ -149,6 +104,79 @@ class CharactersFragment : Fragment() {
         with(binding){
             rvCharactersList.layoutManager = LinearLayoutManager(context)
             rvCharactersList.adapter = adapter
+        }
+    }
+
+    private fun setupListeners() {
+        // Gestión de los filtros
+        with(binding){
+            ivFilter.setOnClickListener {
+                showFilterDialog()
+            }
+
+            etSearch.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val searchText = s.toString()
+                    viewModel.searchCharactersByFilter(searchText)
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
+            viewModel.searchResults.observe(viewLifecycleOwner) { movies ->
+                adapter.updateData(movies)
+            }
+        }
+    }
+
+    private fun showFilterDialog() {
+        var hint = ""
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filter, null)
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setTitle("Filter by...")
+
+        val alertDialog = dialogBuilder.create()
+        alertDialog.show()
+
+        // Mostrar las opciones del filtro
+        dialogView.findViewById<RadioButton>(R.id.rb_option_1).text = "Name"
+        dialogView.findViewById<RadioButton>(R.id.rb_option_2).text = "Age"
+        dialogView.findViewById<RadioButton>(R.id.rb_option_3).text = "Gender"
+
+        // Mostrar la selección anterior del usuario si hubo
+        when (viewModel.currentFilter) {
+            "Search by Name" -> dialogView.findViewById<RadioButton>(R.id.rb_option_1).isChecked = true
+            "Search by Age" -> dialogView.findViewById<RadioButton>(R.id.rb_option_2).isChecked = true
+            "Search by Gender" -> dialogView.findViewById<RadioButton>(R.id.rb_option_3).isChecked = true
+            // Asegúrate de manejar todos los casos posibles aquí
+            else -> {} // Manejar el caso predeterminado si es necesario
+        }
+
+        // Establecer la visualización del nuevo filtrado
+        dialogView.findViewById<RadioButton>(R.id.rb_option_1).setOnClickListener {
+            hint = "Search by Name"
+        }
+
+        dialogView.findViewById<RadioButton>(R.id.rb_option_2).setOnClickListener {
+            hint = "Search by Age"
+        }
+
+        dialogView.findViewById<RadioButton>(R.id.rb_option_3).setOnClickListener {
+            hint = "Search by Gender"
+        }
+
+        // Botón de Aceptar
+        dialogView.findViewById<Button>(R.id.btnAccept).setOnClickListener {
+            // Limpiamos la barra de búsqueda
+            binding.etSearch.text.clear()
+            // Mostramos el nuevo tipo de búsqueda
+            viewModel.setSearchFilter(hint)
+            binding.etSearch.hint = hint
+            // Cerramos el popup
+            alertDialog.dismiss() // Cierra el diálogo al hacer clic en "Aceptar"
         }
     }
 

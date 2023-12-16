@@ -102,11 +102,17 @@ class MovieViewModel (
         }
     }
 
+    fun setMovieDetail(movie: Movie){
+        viewModelScope.launch {
+            _movieDetail.value = movie
+        }
+    }
+
     private val _searchResults = MutableLiveData<List<Movie>>()
     val searchResults: LiveData<List<Movie>>
         get() = _searchResults
 
-    var currentFilter: String = "" // Esta variable guarda el filtro seleccionado
+    var currentFilter: String = "Search By Title" // Esta variable guarda el filtro seleccionado
 
     fun setSearchFilter(filter: String) {
         currentFilter = filter
@@ -124,12 +130,6 @@ class MovieViewModel (
             searchResults.observeForever { movies ->
                 _searchResults.value = movies
             }
-        }
-    }
-
-    fun setMovieDetail(movie: Movie){
-        viewModelScope.launch {
-            _movieDetail.value = movie
         }
     }
 
