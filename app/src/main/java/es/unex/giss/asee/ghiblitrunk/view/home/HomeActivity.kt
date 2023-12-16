@@ -19,7 +19,9 @@ import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.data.models.User
 import es.unex.giss.asee.ghiblitrunk.databinding.ActivityHomeBinding
+import es.unex.giss.asee.ghiblitrunk.view.AboutUsActivity
 import es.unex.giss.asee.ghiblitrunk.view.LoginActivity
+import es.unex.giss.asee.ghiblitrunk.view.ProfileActivity
 import es.unex.giss.asee.ghiblitrunk.view.home.favorite.LibraryFragment
 
 class HomeActivity : AppCompatActivity(),
@@ -139,10 +141,10 @@ class HomeActivity : AppCompatActivity(),
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_profile -> {
-                // TODO: Que lleve al perfil
+                goToProfile()
             }
-            R.id.nav_settings -> {
-                // TODO: go to settings fragment
+            R.id.nav_about_us -> {
+                goToAboutUs()
             }
             R.id.nav_logout -> {
                 closeSession()
@@ -158,5 +160,15 @@ class HomeActivity : AppCompatActivity(),
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish() // Cerrar la actividad actual para evitar que se pueda regresar con el botón de retroceso
+    }
+
+    private fun goToAboutUs(){
+        val intent = Intent(this, AboutUsActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun goToProfile(){
+        val intent = Intent(this, ProfileActivity::class.java)
+        startActivity(intent)
     }
 }
