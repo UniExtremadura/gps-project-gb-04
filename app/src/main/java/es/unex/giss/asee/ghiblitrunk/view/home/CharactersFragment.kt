@@ -51,22 +51,6 @@ class CharactersFragment : Fragment() {
         binding.etSearch.hint = viewModel.currentFilter
         viewModel.setSearchFilter(viewModel.currentFilter)
 
-        homeViewModel.user.observe(viewLifecycleOwner) { user ->
-            viewModel.user = user
-        }
-
-        viewModel.spinner.observe(viewLifecycleOwner) { character ->
-            // TODO: Poner un spinner en la interfaz gráfica
-            //binding.spinner.visibility = if (character) View.VISIBLE else View.GONE
-        }
-
-        viewModel.toast.observe(viewLifecycleOwner) {text ->
-            text?.let {
-                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-                viewModel.onToastShown()
-            }
-        }
-
         setUpRecyclerView(emptyList())
         subscribeUI(adapter)
     }
@@ -84,26 +68,19 @@ class CharactersFragment : Fragment() {
     //endregion
 
     private fun subscribeUI(adapter: CharacterAdapter){
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
+
+        viewModel.toast.observe(viewLifecycleOwner) {text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
+            }
+        }
+
         viewModel.characters.observe(viewLifecycleOwner) { characters ->
             adapter.updateData(characters)
-        }
-    }
-
-    private fun setUpRecyclerView(charactersList: List<Character>){
-        // Actualizar el RecyclerView con la lista combinada
-        adapter = CharacterAdapter(
-            charactersList,
-            viewModel = viewModel,
-            onClickItem =
-            {
-                homeViewModel.onCharacterClick(it)
-            },
-            context = context
-        )
-
-        with(binding){
-            rvCharactersList.layoutManager = LinearLayoutManager(context)
-            rvCharactersList.adapter = adapter
         }
     }
 
@@ -177,6 +154,24 @@ class CharactersFragment : Fragment() {
             binding.etSearch.hint = hint
             // Cerramos el popup
             alertDialog.dismiss() // Cierra el diálogo al hacer clic en "Aceptar"
+        }
+    }
+
+    private fun setUpRecyclerView(charactersList: List<Character>){
+        // Actualizar el RecyclerView con la lista combinada
+        adapter = CharacterAdapter(
+            charactersList,
+            viewModel = viewModel,
+            onClickItem =
+            {
+                homeViewModel.onCharacterClick(it)
+            },
+            context = context
+        )
+
+        with(binding){
+            rvCharactersList.layoutManager = LinearLayoutManager(context)
+            rvCharactersList.adapter = adapter
         }
     }
 

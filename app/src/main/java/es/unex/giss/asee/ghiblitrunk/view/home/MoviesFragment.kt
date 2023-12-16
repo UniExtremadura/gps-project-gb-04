@@ -52,31 +52,11 @@ class MoviesFragment : Fragment() {
         binding.etSearch.hint = viewModel.currentFilter
         viewModel.setSearchFilter(viewModel.currentFilter)
 
-        homeViewModel.user.observe(viewLifecycleOwner) { user ->
-            viewModel.user = user
-        }
 
-        viewModel.spinner.observe(viewLifecycleOwner) { movie ->
-            // TODO: Poner un spinner en la interfaz gráfica
-            //binding.spinner.visibility = if (movie) View.VISIBLE else View.GONE
-        }
-
-        viewModel.toast.observe(viewLifecycleOwner) {text ->
-            text?.let {
-                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-                viewModel.onToastShown()
-            }
-        }
 
         setUpRecyclerView(emptyList())
         subscribeUI(adapter)
     }
-
-    override fun onResume() {
-        super.onResume()
-        binding.etSearch.text.clear() // Esto limpia el texto de la barra de búsqueda al regresar al fragmento
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -86,6 +66,17 @@ class MoviesFragment : Fragment() {
     //endregion
 
     private fun subscribeUI(adapter: MovieAdapter){
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
+
+        viewModel.toast.observe(viewLifecycleOwner) {text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
+            }
+        }
+
         viewModel.movies.observe(viewLifecycleOwner) { movies ->
             adapter.updateData(movies)
         }
