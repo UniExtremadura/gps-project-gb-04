@@ -3,15 +3,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Filter by:"
-        android:fontFamily="@font/montserrat_alternates"
-        android:textSize="15dp"
-        android:textColor="#000000" />
-
     <RadioGroup
         android:id="@+id/radioGroupFilter"
         android:layout_width="match_parent"
@@ -19,26 +10,26 @@
         android:orientation="vertical">
 
         <RadioButton
-            android:id="@+id/radioTitle"
+            android:id="@+id/rb_option_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title"
+            android:text="Option 1"
             android:fontFamily="@font/montserrat_alternates"
             android:textSize="15dp"/>
 
         <RadioButton
-            android:id="@+id/radioDate"
+            android:id="@+id/rb_option_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Release date"
+            android:text="Option 2"
             android:fontFamily="@font/montserrat_alternates"
             android:textSize="15dp"/>
 
         <RadioButton
-            android:id="@+id/radioDirector"
+            android:id="@+id/rb_option_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Director"
+            android:text="Option 3"
             android:fontFamily="@font/montserrat_alternates"
             android:textSize="15dp"/>
     </RadioGroup>

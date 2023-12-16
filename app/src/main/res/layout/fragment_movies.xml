@@ -25,7 +25,7 @@
             android:id="@+id/et_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search movies"
+            android:hint="Searching..."
             android:fontFamily="@font/montserrat_alternates"
             android:textSize="15dp"
             android:inputType="text"
