@@ -80,7 +80,7 @@ class MoviesFragment : Fragment() {
         }
 
         viewModel.spinner.observe(viewLifecycleOwner) { movie ->
-            binding.spinner.visibility = if (movie) View.VISIBLE else View.GONE
+            //binding.spinner.visibility = if (movie) View.VISIBLE else View.GONE
         }
 
         viewModel.toast.observe(viewLifecycleOwner) {text ->

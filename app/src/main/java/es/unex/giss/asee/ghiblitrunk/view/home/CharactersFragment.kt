@@ -77,7 +77,7 @@ class CharactersFragment : Fragment() {
         }
 
         viewModel.spinner.observe(viewLifecycleOwner) { character ->
-            binding.spinner.visibility = if (character) View.VISIBLE else View.GONE
+            //binding.spinner.visibility = if (character) View.VISIBLE else View.GONE
         }
 
         viewModel.toast.observe(viewLifecycleOwner) {text ->
@@ -106,7 +106,7 @@ class CharactersFragment : Fragment() {
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     val searchText = s.toString()
-                    viewModel.searchMoviesByFilter(searchText)
+                    viewModel.searchCharactersByFilter(searchText)
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
