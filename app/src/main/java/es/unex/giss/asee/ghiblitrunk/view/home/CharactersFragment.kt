@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.Toast
@@ -28,6 +30,8 @@ class CharactersFragment : Fragment() {
     private val viewModel: CharacterViewModel by viewModels { CharacterViewModel.Factory }
     private val homeViewModel: HomeViewModel by activityViewModels()
 
+    private lateinit var rotateAnimation : Animation
+
     //region Lifecycle
 
     override fun onCreateView(
@@ -47,22 +51,7 @@ class CharactersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        homeViewModel.user.observe(viewLifecycleOwner) { user ->
-            viewModel.user = user
-        }
-
-        viewModel.spinner.observe(viewLifecycleOwner) { character ->
-            // TODO: Poner un spinner en la interfaz gráfica
-            //binding.spinner.visibility = if (character) View.VISIBLE else View.GONE
-        }
-
-        viewModel.toast.observe(viewLifecycleOwner) {text ->
-            text?.let {
-                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-                viewModel.onToastShown()
-            }
-        }
-
+        setUpUI()
         setUpRecyclerView(emptyList())
         subscribeUI(adapter)
     }
@@ -78,6 +67,31 @@ class CharactersFragment : Fragment() {
         viewModel.characters.observe(viewLifecycleOwner) { characters ->
             adapter.updateData(characters)
         }
+
+        viewModel.searchResults.observe(viewLifecycleOwner) { movies ->
+            adapter.updateData(movies)
+        }
+
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
+
+        viewModel.spinner.observe(viewLifecycleOwner) { character ->
+            binding.spinner.visibility = if (character) View.VISIBLE else View.GONE
+        }
+
+        viewModel.toast.observe(viewLifecycleOwner) {text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
+            }
+        }
+    }
+
+    private fun setUpUI(){
+        rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.rotate)
+
+        binding.spinner.startAnimation(rotateAnimation)
     }
 
     private fun setupListeners() {
@@ -97,10 +111,6 @@ class CharactersFragment : Fragment() {
 
                 override fun afterTextChanged(s: Editable?) {}
             })
-
-            viewModel.searchResults.observe(viewLifecycleOwner) { movies ->
-                adapter.updateData(movies)
-            }
         }
     }
 

@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.Toast
@@ -28,6 +30,8 @@ class MoviesFragment : Fragment() {
 
     private val viewModel: MovieViewModel by viewModels { MovieViewModel.Factory }
     private val homeViewModel: HomeViewModel by activityViewModels()
+
+    private lateinit var rotateAnimation : Animation
 
     //region Lifecycle
 
@@ -50,22 +54,8 @@ class MoviesFragment : Fragment() {
 
         viewModel.setSearchFilter("Search by Title")
 
-        homeViewModel.user.observe(viewLifecycleOwner) { user ->
-            viewModel.user = user
-        }
 
-        viewModel.spinner.observe(viewLifecycleOwner) { movie ->
-            // TODO: Poner un spinner en la interfaz gráfica
-            //binding.spinner.visibility = if (movie) View.VISIBLE else View.GONE
-        }
-
-        viewModel.toast.observe(viewLifecycleOwner) {text ->
-            text?.let {
-                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-                viewModel.onToastShown()
-            }
-        }
-
+        setUpUI()
         setUpRecyclerView(emptyList())
         subscribeUI(adapter)
     }
@@ -75,9 +65,31 @@ class MoviesFragment : Fragment() {
         _binding = null // avoid memory leaks
     }
 
+    private fun setUpUI(){
+        rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.rotate)
+
+        binding.spinner.startAnimation(rotateAnimation)
+    }
+
     //endregion
 
     private fun subscribeUI(adapter: MovieAdapter){
+
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
+
+        viewModel.spinner.observe(viewLifecycleOwner) { movie ->
+            binding.spinner.visibility = if (movie) View.VISIBLE else View.GONE
+        }
+
+        viewModel.toast.observe(viewLifecycleOwner) {text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
+            }
+        }
+
         viewModel.movies.observe(viewLifecycleOwner) { movies ->
             adapter.updateData(movies)
         }
