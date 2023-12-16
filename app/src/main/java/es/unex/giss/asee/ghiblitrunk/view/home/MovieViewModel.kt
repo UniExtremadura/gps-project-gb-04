@@ -112,7 +112,7 @@ class MovieViewModel (
     val searchResults: LiveData<List<Movie>>
         get() = _searchResults
 
-    var currentFilter: String = "Search By Title" // Esta variable guarda el filtro seleccionado
+    var currentFilter: String = "Search by Title"
 
     fun setSearchFilter(filter: String) {
         currentFilter = filter

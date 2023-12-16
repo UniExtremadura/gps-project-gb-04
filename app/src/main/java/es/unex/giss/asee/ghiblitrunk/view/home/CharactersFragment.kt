@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -109,7 +110,6 @@ class CharactersFragment : Fragment() {
     }
 
     private fun showFilterDialog() {
-        var hint = ""
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filter, null)
         val dialogBuilder = AlertDialog.Builder(requireContext())
             .setView(dialogView)
@@ -123,36 +123,26 @@ class CharactersFragment : Fragment() {
         dialogView.findViewById<RadioButton>(R.id.rb_option_2).text = "Age"
         dialogView.findViewById<RadioButton>(R.id.rb_option_3).text = "Gender"
 
-        // Mostrar la selección anterior del usuario si hubo
+        val radioGroup = dialogView.findViewById<RadioGroup>(R.id.radioGroupFilter)
+
+        // Restablecer la selección del filtro según el valor almacenado en el ViewModel
         when (viewModel.currentFilter) {
-            "Search by Name" -> dialogView.findViewById<RadioButton>(R.id.rb_option_1).isChecked = true
-            "Search by Age" -> dialogView.findViewById<RadioButton>(R.id.rb_option_2).isChecked = true
-            "Search by Gender" -> dialogView.findViewById<RadioButton>(R.id.rb_option_3).isChecked = true
-            // Asegúrate de manejar todos los casos posibles aquí
-            else -> {} // Manejar el caso predeterminado si es necesario
-        }
-
-        // Establecer la visualización del nuevo filtrado
-        dialogView.findViewById<RadioButton>(R.id.rb_option_1).setOnClickListener {
-            hint = "Search by Name"
-        }
-
-        dialogView.findViewById<RadioButton>(R.id.rb_option_2).setOnClickListener {
-            hint = "Search by Age"
-        }
-
-        dialogView.findViewById<RadioButton>(R.id.rb_option_3).setOnClickListener {
-            hint = "Search by Gender"
+            "Search by Name" -> radioGroup.check(R.id.rb_option_1)
+            "Search by Age" -> radioGroup.check(R.id.rb_option_2)
+            "Search by Gender" -> radioGroup.check(R.id.rb_option_3)
         }
 
         // Botón de Aceptar
         dialogView.findViewById<Button>(R.id.btnAccept).setOnClickListener {
-            // Limpiamos la barra de búsqueda
-            binding.etSearch.text.clear()
-            // Mostramos el nuevo tipo de búsqueda
-            viewModel.setSearchFilter(hint)
-            binding.etSearch.hint = hint
-            // Cerramos el popup
+            val selectedRadioButtonId = radioGroup.checkedRadioButtonId
+            when (selectedRadioButtonId) {
+                R.id.rb_option_1 -> viewModel.setSearchFilter("Search by Name")
+                R.id.rb_option_2 -> viewModel.setSearchFilter("Search by Age")
+                R.id.rb_option_3 -> viewModel.setSearchFilter("Search by Gender")
+            }
+
+            binding.etSearch.text.clear() // Limpiar la barra de búsqueda
+            binding.etSearch.hint = viewModel.currentFilter // Actualizar el hint de la barra de búsqueda
             alertDialog.dismiss() // Cierra el diálogo al hacer clic en "Aceptar"
         }
     }

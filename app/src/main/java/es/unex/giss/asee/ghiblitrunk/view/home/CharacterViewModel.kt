@@ -113,7 +113,7 @@ class CharacterViewModel (
     val searchResults: LiveData<List<Character>>
         get() = _searchResults
 
-    var currentFilter: String = "" // Esta variable guarda el filtro seleccionado
+    var currentFilter: String = "Search by Name"
 
     fun setSearchFilter(filter: String) {
         currentFilter = filter
