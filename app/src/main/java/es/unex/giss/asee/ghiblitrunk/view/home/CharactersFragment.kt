@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,24 +48,17 @@ class CharactersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        homeViewModel.user.observe(viewLifecycleOwner) { user ->
-            viewModel.user = user
-        }
-
-        viewModel.spinner.observe(viewLifecycleOwner) { character ->
-            // TODO: Poner un spinner en la interfaz gráfica
-            //binding.spinner.visibility = if (character) View.VISIBLE else View.GONE
-        }
-
-        viewModel.toast.observe(viewLifecycleOwner) {text ->
-            text?.let {
-                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-                viewModel.onToastShown()
-            }
-        }
+        // Establecemos los valores de la barra de búsqueda
+        binding.etSearch.hint = viewModel.currentFilter
+        viewModel.setSearchFilter(viewModel.currentFilter)
 
         setUpRecyclerView(emptyList())
         subscribeUI(adapter)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.etSearch.text.clear() // Esto limpia el texto de la barra de búsqueda al regresar al fragmento
     }
 
     override fun onDestroyView() {
@@ -75,6 +69,17 @@ class CharactersFragment : Fragment() {
     //endregion
 
     private fun subscribeUI(adapter: CharacterAdapter){
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
+
+        viewModel.toast.observe(viewLifecycleOwner) {text ->
+            text?.let {
+                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
+            }
+        }
+
         viewModel.characters.observe(viewLifecycleOwner) { characters ->
             adapter.updateData(characters)
         }
@@ -92,7 +97,7 @@ class CharactersFragment : Fragment() {
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     val searchText = s.toString()
-                    viewModel.searchMoviesByFilter(searchText)
+                    viewModel.searchCharactersByFilter(searchText)
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
@@ -105,31 +110,39 @@ class CharactersFragment : Fragment() {
     }
 
     private fun showFilterDialog() {
-        var hint = ""
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_filter, null)
         val dialogBuilder = AlertDialog.Builder(requireContext())
             .setView(dialogView)
-            .setTitle("Select Filter")
+            .setTitle("Filter by...")
 
         val alertDialog = dialogBuilder.create()
         alertDialog.show()
 
-        dialogView.findViewById<RadioButton>(R.id.radioTitle).setOnClickListener {
-            hint = "Search by Name"
-        }
+        // Mostrar las opciones del filtro
+        dialogView.findViewById<RadioButton>(R.id.rb_option_1).text = "Name"
+        dialogView.findViewById<RadioButton>(R.id.rb_option_2).text = "Age"
+        dialogView.findViewById<RadioButton>(R.id.rb_option_3).text = "Gender"
 
-        dialogView.findViewById<RadioButton>(R.id.radioDate).setOnClickListener {
-            hint = "Search by Age"
-        }
+        val radioGroup = dialogView.findViewById<RadioGroup>(R.id.radioGroupFilter)
 
-        dialogView.findViewById<RadioButton>(R.id.radioDirector).setOnClickListener {
-            hint = "Search by Gender"
+        // Restablecer la selección del filtro según el valor almacenado en el ViewModel
+        when (viewModel.currentFilter) {
+            "Search by Name" -> radioGroup.check(R.id.rb_option_1)
+            "Search by Age" -> radioGroup.check(R.id.rb_option_2)
+            "Search by Gender" -> radioGroup.check(R.id.rb_option_3)
         }
 
         // Botón de Aceptar
         dialogView.findViewById<Button>(R.id.btnAccept).setOnClickListener {
-            viewModel.setSearchFilter(hint)
-            binding.etSearch.hint = hint
+            val selectedRadioButtonId = radioGroup.checkedRadioButtonId
+            when (selectedRadioButtonId) {
+                R.id.rb_option_1 -> viewModel.setSearchFilter("Search by Name")
+                R.id.rb_option_2 -> viewModel.setSearchFilter("Search by Age")
+                R.id.rb_option_3 -> viewModel.setSearchFilter("Search by Gender")
+            }
+
+            binding.etSearch.text.clear() // Limpiar la barra de búsqueda
+            binding.etSearch.hint = viewModel.currentFilter // Actualizar el hint de la barra de búsqueda
             alertDialog.dismiss() // Cierra el diálogo al hacer clic en "Aceptar"
         }
     }

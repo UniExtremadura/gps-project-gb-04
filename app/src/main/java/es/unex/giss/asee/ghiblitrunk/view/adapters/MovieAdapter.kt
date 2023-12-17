@@ -1,12 +1,13 @@
 package es.unex.giss.asee.ghiblitrunk.view.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import es.unex.giss.asee.ghiblitrunk.R
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.ItemMovieBinding
 import es.unex.giss.asee.ghiblitrunk.view.home.MovieViewModel
@@ -26,17 +27,15 @@ class MovieAdapter (
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             with(binding){// Asignamos las características del item
-                // Mostramos la imagen del siguiente formato
+                // Obtenemos el ID de la imagen a mostrar
                 val imageName = "poster_" + movie?.title?.lowercase()?.replace(" ", "_")?.replace("'", "")
-                // Obtener el ID de la imagen
-                val resourceId = context?.resources?.getIdentifier(imageName, "drawable", context.packageName)
-                Log.e("MOVIE_ADAPTER", "El ID del recurso para $imageName es: $resourceId")
+                val imageId = context?.resources?.getIdentifier(imageName, "drawable", context.packageName)
 
-                if (resourceId != null && resourceId != 0) {
-                    // Si encontramos el recurso lo añadimos al imageView
+                // Se muestra si se encuentra la imagen asociada al personaje
+                if (imageId != null && imageId != 0) {
                     context?.let {
                         Glide.with(it)
-                            .load(resourceId)
+                            .load(imageId)
                             .into(ivImage)
                     }
                 } else {
@@ -44,12 +43,16 @@ class MovieAdapter (
                     binding.ivImage.visibility = View.GONE
                 }
 
-                // Mostramos el título
                 tvTitle.text = movie.title
                 tvReleaseDate.text = movie.release_date
                 tvDirector.text = movie.director
 
                 // Configuramos el like
+                if(movie.isFavourite)
+                    ivLike.foreground = ContextCompat.getDrawable(context!!, R.drawable.ic_favorite_liked)
+                else
+                    ivLike.foreground = null
+
                 ivLike.setOnClickListener {
                     viewModel.onClickLike(movie)
                 }

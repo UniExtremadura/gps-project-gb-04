@@ -13,9 +13,9 @@
             android:title="My profile"/>
 
         <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/nav_settings"
-            android:title="Settings"/>
+            android:id="@+id/nav_about_us"
+            android:icon="@drawable/baseline_info_24"
+            android:title="About Us"/>
 
     </group>
 

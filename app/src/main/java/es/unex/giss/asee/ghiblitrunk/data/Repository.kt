@@ -206,7 +206,7 @@ open class Repository(
         moviesDao.insertAndRelate(movie, userId)
     }
 
-    // region Barra de búsqueda
+    // region Search Bar
     fun searchMoviesByTitle(title: String): LiveData<List<Movie>> {
         return moviesDao.searchMoviesByTitle("%$title%")
     }
@@ -227,8 +227,8 @@ open class Repository(
         return characterDao.searchCharactersByAge("$age%")
     }
 
-    fun searchCharactersByGender(director: String): LiveData<List<Character>> {
-        return characterDao.searchCharactersByGender("%$director%")
+    fun searchCharactersByGender(gender: String): LiveData<List<Character>> {
+        return characterDao.searchCharactersByGender("$gender%")
     }
     // endregion
 
@@ -248,7 +248,15 @@ open class Repository(
         characterDao.delete(character)
     }
 
-    // endregion
+    suspend fun changeUserPassword(newPassword: String, user: User){
+        user.password = newPassword
+        userDao.update(user)
+    }
+
+    suspend fun changeUsername(newUsername: String, user: User){
+        user.name = newUsername
+        userDao.update(user)
+    }
 
     suspend fun getMoviesRelated(moviesUrls: List<String>): List<Movie> {
         val moviesRelated: MutableList<Movie> = mutableListOf()
@@ -264,6 +272,8 @@ open class Repository(
 
         return moviesRelated
     }
+
+
     companion object {
         private const val MIN_TIME_FROM_LAST_FETCH_MILLIS: Long = 30000
     }
