@@ -71,24 +71,15 @@ class CharacterDetailFragment : Fragment() {
         with(binding) {
             tvName.text = character?.name
             tvGender.text = character?.gender
-            tvOtherInfo.text =
-                "This character is ${character?.age} years old and has ${character?.eye_color?.lowercase()} eyes and ${character?.hair_color?.lowercase()} hair."
+            tvOtherInfo.text = "This character is ${character?.age} years old and has ${character?.eye_color?.lowercase()} eyes and ${character?.hair_color?.lowercase()} hair."
 
-            // Mostramos la imagen del siguiente formato
-            val imageName =
-                "portrait_" + character?.name?.lowercase()?.replace(" ", "_")?.replace("'", "")
-            // Obtener el ID de la imagen
-            val resourceId =
-                context?.resources?.getIdentifier(imageName, "drawable", context?.packageName)
-            Log.e("CHARACTER_DETAIL_FRAG", "El ID del recurso para $imageName es: $resourceId")
+            // Obtenemos el ID de la imagen a mostrar
+            val imageName = "portrait_" + character?.name?.lowercase()?.replace(" ", "_")?.replace("'", "")
+            val imageId = context?.resources?.getIdentifier(imageName, "drawable", context?.packageName)
 
-            if (resourceId != null && resourceId != 0) {
-                // Si encontramos el recurso lo añadimos al imageView
-                context?.let {
-                    Glide.with(it)
-                        .load(resourceId)
-                        .into(ivPortrait)
-                }
+            // Se muestra si se encuentra la imagen asociada al personaje
+            if (imageId != null && imageId != 0) {
+                ivPortrait.setImageResource(imageId)
             } else {
                 // Si no se encuentra, ocultamos el ImageView
                 binding.ivPortrait.visibility = View.GONE

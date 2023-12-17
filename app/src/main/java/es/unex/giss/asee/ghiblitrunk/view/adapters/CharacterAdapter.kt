@@ -1,17 +1,12 @@
 package es.unex.giss.asee.ghiblitrunk.view.adapters
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import es.unex.giss.asee.ghiblitrunk.R
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.databinding.ItemCharacterBinding
 import es.unex.giss.asee.ghiblitrunk.view.home.CharacterViewModel
-import java.lang.reflect.Field
-import java.util.Random
 
 class CharacterAdapter(
     private var charactersList: List<Character>,
@@ -28,19 +23,13 @@ class CharacterAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(character: Character) {
             with(binding){// Asignamos las características del item
-                // Mostramos la imagen del siguiente formato
+                // Obtenemos el ID de la imagen a mostrar
                 val imageName = "portrait_" + character?.name?.lowercase()?.replace(" ", "_")?.replace("'", "")
-                // Obtener el ID de la imagen
-                val resourceId = context?.resources?.getIdentifier(imageName, "drawable", context.packageName)
-                Log.e("CHARACTER_ADAPTER", "El ID del recurso para $imageName es: $resourceId")
+                val imageId = context?.resources?.getIdentifier(imageName, "drawable", context.packageName)
 
-                if (resourceId != null && resourceId != 0) {
-                    // Si encontramos el recurso lo añadimos al imageView
-                    context?.let {
-                        Glide.with(it)
-                            .load(resourceId)
-                            .into(ivImage)
-                    }
+                // Se muestra si se encuentra la imagen asociada al personaje
+                if (imageId != null && imageId != 0) {
+                    ivImage.setImageResource(imageId)
                 } else {
                     // Si no se encuentra, ocultamos el ImageView
                     binding.ivImage.visibility = View.GONE
@@ -49,7 +38,7 @@ class CharacterAdapter(
                 tvName.text = character.name
                 tvGender.text = character.gender
 
-                // Configurar onClick
+                // Configurar el like
                 ivLike.setOnClickListener {
                     viewModel.onClickLike(character)
                 }
