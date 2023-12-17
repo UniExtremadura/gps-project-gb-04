@@ -6,17 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import es.unex.giss.asee.ghiblitrunk.data.Repository
+import es.unex.giss.asee.ghiblitrunk.R
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentCharacterDetailBinding
-import es.unex.giss.asee.ghiblitrunk.view.adapters.CharacterAdapter
 import es.unex.giss.asee.ghiblitrunk.view.adapters.LittleMovieAdapter
 
 class CharacterDetailFragment : Fragment() {
@@ -60,6 +59,11 @@ class CharacterDetailFragment : Fragment() {
             }
         }
 
+        if(character.isFavourite)
+            binding.ivLike.foreground = ContextCompat.getDrawable(requireContext(), R.drawable.ic_favorite_liked)
+        else
+            binding.ivLike.foreground = null
+
         Log.d(TAG, "Fetching ${character.name} details")
         characterViewModel.characterDetail.observe(viewLifecycleOwner) { character ->
             showBinding(character)
@@ -94,7 +98,7 @@ class CharacterDetailFragment : Fragment() {
                 }
             }
 
-            // Configurar el botón de like
+            // Configurar el like
             ivLike.setOnClickListener {
                 if (character != null) {
                     characterViewModel.onClickLike(character)

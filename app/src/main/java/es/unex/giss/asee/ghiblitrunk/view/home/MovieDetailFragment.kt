@@ -7,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import es.unex.giss.asee.ghiblitrunk.R
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.FragmentMovieDetailBinding
 
@@ -53,6 +55,11 @@ class MovieDetailFragment : Fragment() {
                 movieViewModel.onToastShown()
             }
         }
+
+        if(movie.isFavourite)
+            binding.ivLike.foreground = ContextCompat.getDrawable(requireContext(), R.drawable.ic_favorite_liked)
+        else
+            binding.ivLike.foreground = null
 
         Log.d(TAG, "Fetching ${movie.title} details")
         movieViewModel.movieDetail.observe(viewLifecycleOwner) { movie ->
