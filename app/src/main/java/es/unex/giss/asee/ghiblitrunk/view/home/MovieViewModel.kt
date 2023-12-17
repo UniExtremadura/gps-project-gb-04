@@ -12,6 +12,7 @@ import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.data.models.User
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MovieViewModel (
@@ -35,6 +36,8 @@ class MovieViewModel (
     private val _movieDetail = MutableLiveData<Movie>()
     val movieDetail: LiveData<Movie>
         get() = _movieDetail
+
+    private var lastQuery: String = ""
 
     init {
         refresh()
@@ -70,6 +73,9 @@ class MovieViewModel (
                 unsetFavorite(movie)
             else
                 setFavorite(movie)
+
+            delay(100)
+            searchMoviesByFilter()
         }
     }
 
@@ -119,11 +125,29 @@ class MovieViewModel (
     }
 
     fun searchMoviesByFilter(query: String) {
+        lastQuery = query
+
         viewModelScope.launch {
             val searchResults = when (currentFilter) {
                 "Search by Title" -> repository.searchMoviesByTitle(query)
                 "Search by Date" -> repository.searchMoviesByDate(query)
                 "Search by Director" -> repository.searchMoviesByDirector(query)
+                else -> MutableLiveData<List<Movie>>()
+            }
+
+            searchResults.observeForever { movies ->
+                _searchResults.value = movies
+            }
+        }
+    }
+
+    fun searchMoviesByFilter() {
+
+        viewModelScope.launch {
+            val searchResults = when (currentFilter) {
+                "Search by Title" -> repository.searchMoviesByTitle(lastQuery)
+                "Search by Date" -> repository.searchMoviesByDate(lastQuery)
+                "Search by Director" -> repository.searchMoviesByDirector(lastQuery)
                 else -> MutableLiveData<List<Movie>>()
             }
 

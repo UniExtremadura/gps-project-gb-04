@@ -13,6 +13,7 @@ import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.data.models.User
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class CharacterViewModel (
@@ -36,6 +37,8 @@ class CharacterViewModel (
     private val _characterDetail = MutableLiveData<Character>()
     val characterDetail: LiveData<Character>
         get() = _characterDetail
+
+    private var lastQuery: String = ""
 
     init {
         refresh()
@@ -71,7 +74,11 @@ class CharacterViewModel (
                 unsetFavorite(character)
             else
                 setFavorite(character)
+
+            delay(100)
+            searchCharactersByFilter()
         }
+
     }
 
     private fun setFavorite(character: Character){
@@ -120,11 +127,29 @@ class CharacterViewModel (
     }
 
     fun searchCharactersByFilter(query: String) {
+        lastQuery = query
+
         viewModelScope.launch {
             val searchResults = when (currentFilter) {
                 "Search by Name" -> repository.searchCharactersByName(query)
                 "Search by Age" -> repository.searchCharactersByAge(query)
                 "Search by Gender" -> repository.searchCharactersByGender(query)
+                else -> MutableLiveData<List<Character>>()
+            }
+
+            searchResults.observeForever { characters ->
+                _searchResults.value = characters
+            }
+        }
+    }
+
+    fun searchCharactersByFilter() {
+
+        viewModelScope.launch {
+            val searchResults = when (currentFilter) {
+                "Search by Name" -> repository.searchCharactersByName(lastQuery)
+                "Search by Age" -> repository.searchCharactersByAge(lastQuery)
+                "Search by Gender" -> repository.searchCharactersByGender(lastQuery)
                 else -> MutableLiveData<List<Character>>()
             }
 
