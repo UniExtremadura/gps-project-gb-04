@@ -67,17 +67,15 @@ class MovieDetailFragment : Fragment() {
             tvTitle.text = movie?.title
             tvOriginalTitle.text = movie?.original_title
 
-            // Mostramos la imagen del siguiente formato
+            // Obtenemos el ID de la imagen a mostrar
             val imageName = "poster_" + movie?.title?.lowercase()?.replace(" ", "_")?.replace("'", "")
-            // Obtener el ID de la imagen
-            val resourceId = context?.resources?.getIdentifier(imageName, "drawable", context?.packageName)
-            Log.e("MOVIE_DETAIL_FRAG", "El ID del recurso para $imageName es: $resourceId")
+            val imageId = context?.resources?.getIdentifier(imageName, "drawable", context?.packageName)
 
-            if (resourceId != null && resourceId != 0) {
-                // Si encontramos el recurso lo añadimos al imageView
+            // Se muestra si se encuentra la imagen asociada al personaje
+            if (imageId != null && imageId != 0) {
                 context?.let {
                     Glide.with(it)
-                        .load(resourceId)
+                        .load(imageId)
                         .into(ivPoster)
                 }
             } else {
