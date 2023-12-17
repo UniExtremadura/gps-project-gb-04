@@ -19,9 +19,7 @@ import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.data.models.User
 import es.unex.giss.asee.ghiblitrunk.databinding.ActivityHomeBinding
-import es.unex.giss.asee.ghiblitrunk.view.AboutUsActivity
 import es.unex.giss.asee.ghiblitrunk.view.LoginActivity
-import es.unex.giss.asee.ghiblitrunk.view.ProfileActivity
 import es.unex.giss.asee.ghiblitrunk.view.home.favorite.LibraryFragment
 
 class HomeActivity : AppCompatActivity(),
@@ -168,7 +166,6 @@ class HomeActivity : AppCompatActivity(),
     }
 
     private fun goToProfile(){
-        val intent = Intent(this, ProfileActivity::class.java)
-        startActivity(intent)
+        ProfileActivity.start(applicationContext, viewModel.user.value!!)
     }
 }
