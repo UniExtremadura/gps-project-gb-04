@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+    <RadioGroup
+        android:id="@+id/radioGroupFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rb_option_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Option 1"
+            android:fontFamily="@font/montserrat_alternates"
+            android:textSize="15dp"/>
+
+        <RadioButton
+            android:id="@+id/rb_option_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Option 2"
+            android:fontFamily="@font/montserrat_alternates"
+            android:textSize="15dp"/>
+
+        <RadioButton
+            android:id="@+id/rb_option_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Option 3"
+            android:fontFamily="@font/montserrat_alternates"
+            android:textSize="15dp"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btnAccept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Aceptar" />
+</LinearLayout>

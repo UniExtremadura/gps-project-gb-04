@@ -1,0 +1,14 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.GhibliTrunk" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.GhibliTrunk" parent="Base.Theme.GhibliTrunk" />
+    <style name="Toolbar" parent="ThemeOverlay.AppCompat.ActionBar">
+        // toolbar title color
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:background">#6750A4</item>
+    </style>
+</resources>

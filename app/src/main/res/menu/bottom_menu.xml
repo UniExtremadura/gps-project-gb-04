@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Peliculas -->
+    <item
+        android:id="@+id/moviesFragment"
+        android:title="@string/movies_option"
+        android:icon="@drawable/ic_android_black_24dp"
+        android:enabled="true"
+        app:showAsAction="ifRoom" />
+
+    <!-- Personajes -->
+    <item
+        android:id="@+id/charactersFragment"
+        android:title="@string/character_option"
+        android:icon="@drawable/ic_android_black_24dp"
+        android:enabled="true"
+        app:showAsAction="ifRoom" />
+
+    <!-- Bibliteca de favoritos -->
+    <item
+        android:id="@+id/libraryFragment"
+        android:title="@string/library_option"
+        android:icon="@drawable/ic_favorite"
+        android:enabled="true"
+        app:showAsAction="ifRoom" />
+
+</menu>

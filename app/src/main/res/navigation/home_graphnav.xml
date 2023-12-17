@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_graphnav"
+    app:startDestination="@id/moviesFragment">
+
+    <!-- MOVIES -->
+    <fragment
+        android:id="@+id/moviesFragment"
+        android:name="es.unex.giss.asee.ghiblitrunk.view.home.MoviesFragment"
+        android:label="MoviesFragment">
+    </fragment>
+
+    <fragment
+        android:id="@+id/movieDetailFragment"
+        android:name="es.unex.giss.asee.ghiblitrunk.view.home.MovieDetailFragment"
+        android:label="fragment_movie_detail"
+        tools:layout="@layout/fragment_movie_detail">
+        <argument
+            android:name="movie"
+            app:argType="es.unex.giss.asee.ghiblitrunk.data.models.Movie" />
+        <action
+            android:id="@+id/action_movieDetailFragment_to_commentsFragment"
+            app:destination="@id/commentsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/commentsFragment"
+        android:name="es.unex.giss.asee.ghiblitrunk.view.CommentsFragment"
+        android:label="CommentsFragment" >
+        <argument
+            android:name="movie"
+            app:argType="es.unex.giss.asee.ghiblitrunk.data.models.Movie" />
+    </fragment>
+
+    <!-- CHARACTERS -->
+    <fragment
+        android:id="@+id/charactersFragment"
+        android:name="es.unex.giss.asee.ghiblitrunk.view.home.CharactersFragment"
+        android:label="CharactersFragment" />
+
+    <fragment
+        android:id="@+id/characterDetailFragment"
+        android:name="es.unex.giss.asee.ghiblitrunk.view.home.CharacterDetailFragment"
+        android:label="fragment_character_detail"
+        tools:layout="@layout/fragment_character_detail">
+        <argument
+            android:name="character"
+            app:argType="es.unex.giss.asee.ghiblitrunk.data.models.Character" />
+    </fragment>
+
+    <!-- LIBRARY -->
+    <fragment
+        android:id="@+id/libraryFragment"
+        android:name="es.unex.giss.asee.ghiblitrunk.view.home.favorite.LibraryFragment"
+        android:label="LibraryFragment" />
+
+    <action
+        android:id="@+id/action_global_movieDetailFragment"
+        app:destination="@id/movieDetailFragment"/>
+
+    <action
+        android:id="@+id/action_global_characterDetailFragment"
+        app:destination="@id/characterDetailFragment"/>
+</navigation>

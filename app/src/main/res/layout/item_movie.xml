@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="10dp"
+    card_view:cardBackgroundColor="#FFFFFF"
+    card_view:cardCornerRadius="20dp"
+    card_view:contentPadding="4dp">
+
+    <!-- Contenido de la tarjeta -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Imagen de la película -->
+        <ImageView
+            android:id="@+id/iv_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:background="#FEE1D4"/>
+
+        <!-- Título de la película -->
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_image"
+            android:layout_marginTop="16dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/montserrat_alternates_bold"
+            android:textColor="#E23155" />
+
+        <!-- Fecha de lanzamiento -->
+        <TextView
+            android:id="@+id/tv_releaseDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title"
+            android:layout_marginTop="8dp"
+            android:textColor="#000000"
+            android:fontFamily="@font/montserrat_alternates" />
+
+        <!-- Director -->
+        <TextView
+            android:id="@+id/tv_director"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_releaseDate"
+            android:layout_marginTop="8dp"
+            android:textColor="#000000"
+            android:fontFamily="@font/montserrat_alternates" />
+
+        <!-- Me Gusta -->
+        <Button
+            android:id="@+id/iv_like"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/tv_director"
+            android:background="@drawable/ic_favorite"/>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
