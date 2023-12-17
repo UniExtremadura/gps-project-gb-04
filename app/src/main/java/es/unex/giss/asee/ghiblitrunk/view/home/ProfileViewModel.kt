@@ -9,7 +9,6 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import es.unex.giss.asee.ghiblitrunk.GhibliTrunkApplication
 import es.unex.giss.asee.ghiblitrunk.data.Repository
 import es.unex.giss.asee.ghiblitrunk.data.models.User
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
@@ -44,6 +43,12 @@ class ProfileViewModel(
     private fun updateUserPassword(newPassword: String) {
         viewModelScope.launch {
             repository.changeUserPassword(newPassword, user.value!!)
+        }
+    }
+
+    fun changeUsername(newUsername: String){
+        viewModelScope.launch {
+            repository.changeUsername(newUsername, user.value!!)
         }
     }
 

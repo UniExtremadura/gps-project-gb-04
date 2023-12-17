@@ -35,9 +35,10 @@
 
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/iv_change_username"
         android:layout_width="25dp"
         android:layout_height="25dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="6dp"
         android:src="@drawable/baseline_edit_24"
         app:layout_constraintDimensionRatio="1:1"

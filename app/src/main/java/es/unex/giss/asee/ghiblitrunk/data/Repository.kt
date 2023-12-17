@@ -253,6 +253,10 @@ open class Repository(
         userDao.update(user)
     }
 
+    suspend fun changeUsername(newUsername: String, user: User){
+        user.name = newUsername
+        userDao.update(user)
+    }
 
     suspend fun getMoviesRelated(moviesUrls: List<String>): List<Movie> {
         val moviesRelated: MutableList<Movie> = mutableListOf()
