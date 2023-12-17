@@ -3,7 +3,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import es.unex.giss.asee.ghiblitrunk.R
 import es.unex.giss.asee.ghiblitrunk.data.models.Character
 import es.unex.giss.asee.ghiblitrunk.databinding.ItemCharacterBinding
 import es.unex.giss.asee.ghiblitrunk.view.home.CharacterViewModel
@@ -39,6 +41,11 @@ class CharacterAdapter(
                 tvGender.text = character.gender
 
                 // Configurar el like
+                if(character.isFavourite)
+                    ivLike.foreground = ContextCompat.getDrawable(context!!, R.drawable.ic_favorite_liked)
+                else
+                    ivLike.foreground = null
+
                 ivLike.setOnClickListener {
                     viewModel.onClickLike(character)
                 }

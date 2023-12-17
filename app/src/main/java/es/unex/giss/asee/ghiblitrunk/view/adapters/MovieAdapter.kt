@@ -4,8 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import es.unex.giss.asee.ghiblitrunk.R
 import es.unex.giss.asee.ghiblitrunk.data.models.Movie
 import es.unex.giss.asee.ghiblitrunk.databinding.ItemMovieBinding
 import es.unex.giss.asee.ghiblitrunk.view.home.MovieViewModel
@@ -46,6 +48,11 @@ class MovieAdapter (
                 tvDirector.text = movie.director
 
                 // Configuramos el like
+                if(movie.isFavourite)
+                    ivLike.foreground = ContextCompat.getDrawable(context!!, R.drawable.ic_favorite_liked)
+                else
+                    ivLike.foreground = null
+
                 ivLike.setOnClickListener {
                     viewModel.onClickLike(movie)
                 }
